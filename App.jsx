@@ -429,26 +429,26 @@ function NotifPanel({onClose}) {
         <div style={{fontSize:7,color:"#A855F766",fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:14,textAlign:"center"}}>🔔 RAPPELS DE MISSION</div>
         {!granted?(
           <div style={{textAlign:"center",marginBottom:16}}>
-            <div style={{fontSize:10,color:"#555",fontFamily:"'Rajdhani',sans-serif",marginBottom:12}}>Active les notifications pour recevoir des rappels quotidiens du Système.</div>
+            <div style={{fontSize:10,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",marginBottom:12}}>Active les notifications pour recevoir des rappels quotidiens du Système.</div>
             <button onClick={request} style={{padding:"11px 24px",background:"rgba(168,85,247,0.12)",border:"1px solid rgba(168,85,247,0.4)",borderRadius:12,cursor:"pointer",fontSize:11,color:"#A855F7",fontFamily:"'Orbitron',monospace",fontWeight:700}}>ACTIVER LES NOTIFICATIONS</button>
           </div>
         ):(
           <div style={{marginBottom:14}}>
             <div style={{fontSize:9,color:"#39FF14",fontFamily:"'Orbitron',monospace",marginBottom:12,textAlign:"center"}}>✦ NOTIFICATIONS ACTIVES</div>
             {[{id:"morning",label:"🌅 Matin"},{id:"noon",label:"☀️ Midi"},{id:"evening",label:"🌙 Soir"}].map(r=>(
-              <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,background:"rgba(255,255,255,0.02)",borderRadius:10,padding:"9px 12px",border:"1px solid rgba(255,255,255,0.05)"}}>
+              <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,background:"rgba(10,20,50,0.6)",borderRadius:10,padding:"9px 12px",border:"1px solid rgba(56,139,255,0.18)"}}>
                 <div style={{flex:1}}>
                   <div style={{fontSize:11,color:"#C0C8E0",fontFamily:"'Rajdhani',sans-serif",fontWeight:700}}>{r.label}</div>
                   <input type="time" value={times[r.id]} onChange={e=>setTimes(p=>({...p,[r.id]:e.target.value}))}
                     style={{background:"transparent",border:"none",color:"#A855F7",fontFamily:"'Orbitron',monospace",fontSize:10,marginTop:2,width:80}}/>
                 </div>
                 <div onClick={()=>setEnabled(p=>({...p,[r.id]:!p[r.id]}))}
-                  style={{width:36,height:20,borderRadius:10,background:enabled[r.id]?"rgba(168,85,247,0.3)":"rgba(255,255,255,0.04)",border:`1px solid ${enabled[r.id]?"#A855F7":"rgba(255,255,255,0.08)"}`,cursor:"pointer",position:"relative",transition:"all 0.2s"}}>
+                  style={{width:36,height:20,borderRadius:10,background:enabled[r.id]?"rgba(168,85,247,0.3)":"rgba(56,139,255,0.15)",border:`1px solid ${enabled[r.id]?"#A855F7":"rgba(56,139,255,0.25)"}`,cursor:"pointer",position:"relative",transition:"all 0.2s"}}>
                   <div style={{position:"absolute",top:2,left:enabled[r.id]?16:2,width:14,height:14,borderRadius:"50%",background:enabled[r.id]?"#A855F7":"#333",transition:"left 0.2s"}}/>
                 </div>
               </div>
             ))}
-            <button onClick={testNotif} style={{width:"100%",marginTop:4,padding:"9px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,cursor:"pointer",fontSize:9,color:"#333",fontFamily:"'Orbitron',monospace",fontWeight:700}}>TESTER UNE NOTIFICATION</button>
+            <button onClick={testNotif} style={{width:"100%",marginTop:4,padding:"9px",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(56,139,255,0.2)",borderRadius:10,cursor:"pointer",fontSize:9,color:"#8BADD4",fontFamily:"'Orbitron',monospace",fontWeight:700}}>TESTER UNE NOTIFICATION</button>
           </div>
         )}
         <button onClick={onClose} style={{width:"100%",padding:"10px",background:"rgba(168,85,247,0.08)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:11,cursor:"pointer",fontSize:10,color:"#A855F7",fontFamily:"'Orbitron',monospace",fontWeight:700}}>FERMER</button>
@@ -1169,7 +1169,7 @@ function Toasts({list}) {
             <span style={{fontSize:16}}>{t.icon}</span>
             <div>
               <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:t.color||"#A855F7",fontWeight:700}}>{t.title}</div>
-              {t.desc&&<div style={{fontSize:9,color:"#555",fontFamily:"'Rajdhani',sans-serif",marginTop:1}}>{t.desc}</div>}
+              {t.desc&&<div style={{fontSize:9,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",marginTop:1}}>{t.desc}</div>}
             </div>
           </div>
         </div>
@@ -1186,7 +1186,7 @@ function SysDialog({title,body,btn,onClose,color="#A855F7"}) {
         <div style={{background:"rgba(2,0,5,0.99)",border:`1px solid ${color}44`,borderRadius:4,padding:"20px 18px"}}>
           <div style={{fontSize:7,color:"#2A2A3A",fontFamily:"'Orbitron',monospace",letterSpacing:"0.4em",marginBottom:10}}>[ SYSTÈME ]</div>
           <div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color,marginBottom:10,lineHeight:1.4}}>{title}</div>
-          <div style={{fontSize:11,color:"#666",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.75,whiteSpace:"pre-line",marginBottom:18}}>{body}</div>
+          <div style={{fontSize:11,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.75,whiteSpace:"pre-line",marginBottom:18}}>{body}</div>
           <button onClick={onClose} style={{width:"100%",padding:"10px",background:`${color}12`,border:`1px solid ${color}55`,borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",color,letterSpacing:"0.1em"}}>{btn} ›</button>
         </div>
         <div style={{height:1,background:`linear-gradient(90deg,transparent,${color},transparent)`,marginTop:18}}/>
@@ -1201,10 +1201,10 @@ function RankUpScreen({rankData,onClose}) {
       <div style={{textAlign:"center",animation:"rankReveal 0.8s cubic-bezier(.23,1.4,.42,1)"}}>
         <div style={{fontSize:7,color:"#2A2A3A",fontFamily:"'Orbitron',monospace",letterSpacing:"0.4em",marginBottom:14}}>⬛ SYSTÈME : ÉVOLUTION</div>
         <div style={{fontSize:62,marginBottom:12,filter:`drop-shadow(0 0 30px ${rankData.color})`}}>🚪</div>
-        <div style={{fontSize:8,color:"#444",fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:8}}>UNE NOUVELLE PORTE S'OUVRE</div>
+        <div style={{fontSize:8,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:8}}>UNE NOUVELLE PORTE S'OUVRE</div>
         <div style={{fontSize:46,fontFamily:"'Orbitron',monospace",fontWeight:900,color:rankData.color,textShadow:`0 0 20px ${rankData.color}`,letterSpacing:"0.1em",marginBottom:6}}>RANG {rankData.rank}</div>
         <div style={{fontSize:14,color:"#777",fontFamily:"'Rajdhani',sans-serif",marginBottom:4}}>{rankData.title}</div>
-        <div style={{fontSize:10,color:"#333",fontFamily:"monospace",marginBottom:26,fontStyle:"italic"}}>"{rankData.lore}"</div>
+        <div style={{fontSize:10,color:"#8BADD4",fontFamily:"monospace",marginBottom:26,fontStyle:"italic"}}>"{rankData.lore}"</div>
         <button onClick={onClose} style={{padding:"12px 30px",background:`${rankData.color}18`,border:`1px solid ${rankData.color}`,borderRadius:12,cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:rankData.color,letterSpacing:"0.1em"}}>ACCEPTER ›</button>
       </div>
     </div>
@@ -1218,7 +1218,7 @@ function TitleRevealScreen({t,onClose}) {
         <div style={{fontSize:7,color:"#FFD70088",fontFamily:"'Orbitron',monospace",letterSpacing:"0.35em",marginBottom:12}}>⬛ SYSTÈME : TITRE DÉBLOQUÉ</div>
         <div style={{fontSize:52,marginBottom:10,filter:"drop-shadow(0 0 20px #FFD700)"}}>{t.emoji}</div>
         <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#FFD700",marginBottom:5}}>{t.name}</div>
-        <div style={{fontSize:9,color:"#555",fontFamily:"monospace",marginBottom:20}}>{t.desc}</div>
+        <div style={{fontSize:9,color:"#7BA7CC",fontFamily:"monospace",marginBottom:20}}>{t.desc}</div>
         <button onClick={onClose} style={{padding:"10px 26px",background:"rgba(255,215,0,0.1)",border:"1px solid #FFD700",borderRadius:11,cursor:"pointer",fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#FFD700"}}>ACCEPTER ›</button>
       </div>
     </div>
@@ -1234,12 +1234,12 @@ function VictoryScreen({boss,gold,xp,onClose}) {
           <BossSVG bossId={boss.id} color="#39FF14" size={70} isDead/>
         </div>
         <div style={{fontSize:16,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#FFD700",marginBottom:3}}>{boss.name}</div>
-        <div style={{fontSize:9,color:"#444",fontFamily:"monospace",marginBottom:7}}>a été vaincu</div>
-        <div style={{fontSize:10,color:"#555",fontFamily:"'Rajdhani',sans-serif",marginBottom:18,fontStyle:"italic",lineHeight:1.6}}>"{boss.death}"</div>
+        <div style={{fontSize:9,color:"#8BADD4",fontFamily:"monospace",marginBottom:7}}>a été vaincu</div>
+        <div style={{fontSize:10,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",marginBottom:18,fontStyle:"italic",lineHeight:1.6}}>"{boss.death}"</div>
         <div style={{background:"rgba(255,215,0,0.05)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:12,padding:"12px",marginBottom:16}}>
           <div style={{display:"flex",justifyContent:"center",gap:22}}>
-            <div><div style={{fontSize:17,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#FFD700"}}>+{gold}</div><div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>GOLD</div></div>
-            <div><div style={{fontSize:17,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#A855F7"}}>+{xp}</div><div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>XP BONUS</div></div>
+            <div><div style={{fontSize:17,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#FFD700"}}>+{gold}</div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>GOLD</div></div>
+            <div><div style={{fontSize:17,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#A855F7"}}>+{xp}</div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>XP BONUS</div></div>
           </div>
         </div>
         <button onClick={onClose} style={{padding:"11px 26px",background:"rgba(255,215,0,0.14)",border:"1px solid #FFD700",borderRadius:11,cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#FFD700"}}>CONTINUER ›</button>
@@ -1260,18 +1260,18 @@ function Onboarding({ onComplete }) {
   ];
   const s = STEPS[step];
   return (
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#000",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#020B18",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <MangaHero color="#A855F7" rank="E" questsDoneToday={0} totalQuests={1}/>
       <div style={{position:"relative",zIndex:10,maxWidth:310,width:"90%",textAlign:"center",animation:"onboardIn 0.6s ease"}}>
         <div style={{height:1,background:"linear-gradient(90deg,transparent,#A855F7,transparent)",marginBottom:26}}/>
         <div style={{fontSize:50,marginBottom:14,filter:"drop-shadow(0 0 20px #A855F7)"}}>{s.icon}</div>
         <div style={{fontSize:7,color:"#3A3A5A",fontFamily:"'Orbitron',monospace",letterSpacing:"0.4em",marginBottom:10}}>[ SYSTÈME ]</div>
         <div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",marginBottom:14,lineHeight:1.4}}>{s.title}</div>
-        <div style={{fontSize:11,color:"#666",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.85,whiteSpace:"pre-line",marginBottom:22}}>{s.body}</div>
+        <div style={{fontSize:11,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.85,whiteSpace:"pre-line",marginBottom:22}}>{s.body}</div>
         {s.isName&&(
           <div style={{marginBottom:18}}>
             <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&input.trim()){setName(input.trim());setStep(2);}}} placeholder="Ton nom de chasseur..." autoFocus
-              style={{width:"100%",background:"rgba(168,85,247,0.06)",border:"1px solid rgba(168,85,247,0.4)",borderRadius:12,padding:"12px 16px",color:"#E0E8FF",fontFamily:"'Orbitron',monospace",fontSize:13,fontWeight:700,textAlign:"center",marginBottom:10}}/>
+              style={{width:"100%",background:"rgba(168,85,247,0.06)",border:"1px solid rgba(168,85,247,0.4)",borderRadius:12,padding:"12px 16px",color:"#D0EAFF",fontFamily:"'Orbitron',monospace",fontSize:13,fontWeight:700,textAlign:"center",marginBottom:10}}/>
             <button onClick={()=>{if(input.trim()){setName(input.trim());setStep(2);}}} style={{width:"100%",padding:"12px",background:"rgba(168,85,247,0.14)",border:"1px solid #A855F7",borderRadius:12,cursor:"pointer",fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",letterSpacing:"0.1em"}}>CONFIRMER ›</button>
           </div>
         )}
@@ -1300,7 +1300,7 @@ function DungeonEntry({ boss, rankData, onEnter }) {
     `▶ ACCÈS AUTORISÉ — ENTRÉE DU CHASSEUR`,
   ];
   return (
-    <div style={{position:"fixed",inset:0,zIndex:9800,background:"#000",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+    <div style={{position:"fixed",inset:0,zIndex:9800,background:"#020B18",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
       <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(168,85,247,0.03) 2px,rgba(168,85,247,0.03) 4px)",pointerEvents:"none"}}/>
       <div style={{position:"relative",marginBottom:28}}>
         <div style={{width:110,height:150,borderRadius:55,border:`2px solid ${c}`,background:`radial-gradient(ellipse,${c}22 0%,transparent 70%)`,display:"flex",alignItems:"center",justifyContent:"center",animation:"auraB 1.5s ease-in-out infinite",boxShadow:`0 0 40px ${c}55,inset 0 0 30px ${c}18`}}>
@@ -1309,7 +1309,7 @@ function DungeonEntry({ boss, rankData, onEnter }) {
       </div>
       <div style={{maxWidth:320,width:"90%",fontFamily:"'Orbitron',monospace",display:"flex",flexDirection:"column",gap:7}}>
         {lines.map((line,i)=>(
-          <div key={i} style={{fontSize:9,color:i===3?c:"#555",letterSpacing:"0.07em",padding:"6px 10px",border:`1px solid ${i===3?c+"44":"rgba(255,255,255,0.04)"}`,borderRadius:4,background:i===3?`${c}08`:"rgba(0,0,0,0.5)",opacity:phase>i?1:0,transition:"opacity 0.4s",lineHeight:1.5}}>
+          <div key={i} style={{fontSize:9,color:i===3?c:"#555",letterSpacing:"0.07em",padding:"6px 10px",border:`1px solid ${i===3?c+"44":"rgba(56,139,255,0.15)"}`,borderRadius:4,background:i===3?`${c}08`:"rgba(0,0,0,0.5)",opacity:phase>i?1:0,transition:"opacity 0.4s",lineHeight:1.5}}>
             {line}
           </div>
         ))}
@@ -1337,40 +1337,40 @@ function QuestForm({quest,onSave,onCancel}) {
   const save=()=>{if(!f.name.trim()){setErr("Nomme ta quête !");return;}onSave({...f,duration:+f.duration,xp:RANK_XP[autoRank],dmg:RANK_DMG[autoRank],rank:autoRank,cooldown:Math.max(0,(f.duration/3)|0),id:quest?.id||newId()});};
   return (
     <div style={{background:"rgba(5,0,10,0.98)",border:"1px solid rgba(168,85,247,0.15)",borderRadius:13,overflow:"hidden"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 11px",borderBottom:"1px solid rgba(255,255,255,0.04)",background:`${f.color}08`}}>
-        <div onClick={()=>setEmojiOpen(p=>!p)} style={{fontSize:23,cursor:"pointer",padding:"3px 5px",background:"rgba(255,255,255,0.04)",borderRadius:7}}>{f.emoji}</div>
+      <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 11px",borderBottom:"1px solid rgba(56,139,255,0.15)",background:`${f.color}08`}}>
+        <div onClick={()=>setEmojiOpen(p=>!p)} style={{fontSize:23,cursor:"pointer",padding:"3px 5px",background:"rgba(56,139,255,0.15)",borderRadius:7}}>{f.emoji}</div>
         <div style={{flex:1}}>
           <div style={{fontSize:12,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:f.color||"#888"}}>{f.name||"..."}</div>
-          <div style={{fontSize:7,color:"#222",fontFamily:"monospace"}}>Rang {autoRank} · +{RANK_XP[autoRank]}XP · CD:{Math.max(0,(f.duration/3)|0)}s</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>Rang {autoRank} · +{RANK_XP[autoRank]}XP · CD:{Math.max(0,(f.duration/3)|0)}s</div>
         </div>
-        <button onClick={onCancel} style={{background:"none",border:"none",cursor:"pointer",color:"#222",fontSize:16}}>✕</button>
+        <button onClick={onCancel} style={{background:"none",border:"none",cursor:"pointer",color:"#8BADD4",fontSize:16}}>✕</button>
       </div>
-      {emojiOpen&&<div style={{padding:"7px",borderBottom:"1px solid rgba(255,255,255,0.04)",background:"rgba(0,0,0,0.6)"}}>
+      {emojiOpen&&<div style={{padding:"7px",borderBottom:"1px solid rgba(56,139,255,0.15)",background:"rgba(0,0,0,0.6)"}}>
         <div style={{display:"flex",flexWrap:"wrap",gap:3,maxHeight:90,overflowY:"auto"}}>
           {EMOJIS_LIST.map(em=><div key={em} onClick={()=>{setF(p=>({...p,emoji:em}));setEmojiOpen(false);}} style={{fontSize:18,cursor:"pointer",padding:4,borderRadius:5,background:f.emoji===em?"rgba(168,85,247,0.25)":"transparent"}}>{em}</div>)}
         </div>
       </div>}
       <div style={{padding:"9px 11px",display:"flex",flexDirection:"column",gap:8}}>
-        <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>NOM</div>
-          <input value={f.name} onChange={e=>setF(p=>({...p,name:e.target.value}))} placeholder="Ex: Pompes matinales..." style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(168,85,247,0.18)",borderRadius:8,padding:"8px 10px",color:"#E0E8FF",fontFamily:"'Rajdhani',sans-serif",fontSize:13}}/></div>
-        <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>NOM D'ATTAQUE</div>
-          <input value={f.atkName} onChange={e=>setF(p=>({...p,atkName:e.target.value}))} placeholder="Ex: Frappe Titanesque" style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(168,85,247,0.12)",borderRadius:8,padding:"7px 10px",color:"#E0E8FF",fontFamily:"'Rajdhani',sans-serif",fontSize:12}}/></div>
+        <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>NOM</div>
+          <input value={f.name} onChange={e=>setF(p=>({...p,name:e.target.value}))} placeholder="Ex: Pompes matinales..." style={{width:"100%",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(168,85,247,0.18)",borderRadius:8,padding:"8px 10px",color:"#D0EAFF",fontFamily:"'Rajdhani',sans-serif",fontSize:13}}/></div>
+        <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>NOM D'ATTAQUE</div>
+          <input value={f.atkName} onChange={e=>setF(p=>({...p,atkName:e.target.value}))} placeholder="Ex: Frappe Titanesque" style={{width:"100%",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(168,85,247,0.12)",borderRadius:8,padding:"7px 10px",color:"#D0EAFF",fontFamily:"'Rajdhani',sans-serif",fontSize:12}}/></div>
         <div>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-            <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em"}}>DURÉE → RANG AUTO</div>
+            <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em"}}>DURÉE → RANG AUTO</div>
             <div style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:rc.color}}>{f.duration}min · Rang {autoRank}</div>
           </div>
           <input type="range" min="5" max="150" step="5" value={f.duration} onChange={e=>setF(p=>({...p,duration:+e.target.value}))} style={{width:"100%",cursor:"pointer"}}/>
-          <div style={{fontSize:7,color:"#333",fontFamily:"monospace",marginTop:2}}>{RANK_LABELS[autoRank]}</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace",marginTop:2}}>{RANK_LABELS[autoRank]}</div>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"3fr 2fr",gap:7}}>
-          <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>SECTION</div>
-            <div style={{display:"flex",gap:2}}>{["AUBE","JOUR","MIDI","SOIR"].map(s=><div key={s} onClick={()=>setF(p=>({...p,section:s}))} style={{flex:1,textAlign:"center",padding:"5px 1px",borderRadius:5,background:f.section===s?"rgba(168,85,247,0.15)":"rgba(255,255,255,0.02)",border:`1px solid ${f.section===s?"#A855F744":"rgba(255,255,255,0.05)"}`,cursor:"pointer",fontSize:7,color:f.section===s?"#A855F7":"#222",fontFamily:"'Orbitron',monospace"}}>{s}</div>)}</div>
+          <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>SECTION</div>
+            <div style={{display:"flex",gap:2}}>{["AUBE","JOUR","MIDI","SOIR"].map(s=><div key={s} onClick={()=>setF(p=>({...p,section:s}))} style={{flex:1,textAlign:"center",padding:"5px 1px",borderRadius:5,background:f.section===s?"rgba(168,85,247,0.15)":"rgba(10,20,50,0.6)",border:`1px solid ${f.section===s?"#A855F744":"rgba(56,139,255,0.18)"}`,cursor:"pointer",fontSize:7,color:f.section===s?"#A855F7":"#222",fontFamily:"'Orbitron',monospace"}}>{s}</div>)}</div>
           </div>
-          <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>HEURE</div>
-            <input type="time" value={f.time} onChange={e=>setF(p=>({...p,time:e.target.value}))} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(168,85,247,0.12)",borderRadius:8,padding:"7px",color:"#E0E8FF",fontFamily:"'Rajdhani',sans-serif",fontSize:12}}/></div>
+          <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:3}}>HEURE</div>
+            <input type="time" value={f.time} onChange={e=>setF(p=>({...p,time:e.target.value}))} style={{width:"100%",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(168,85,247,0.12)",borderRadius:8,padding:"7px",color:"#D0EAFF",fontFamily:"'Rajdhani',sans-serif",fontSize:12}}/></div>
         </div>
-        <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:4}}>COULEUR</div>
+        <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:4}}>COULEUR</div>
           <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{COLORS_LIST.map(c=><div key={c} onClick={()=>setF(p=>({...p,color:c}))} style={{width:21,height:21,borderRadius:6,background:c,cursor:"pointer",border:`2px solid ${f.color===c?"#fff":"transparent"}`,boxShadow:f.color===c?`0 0 8px ${c}`:"none"}}/>)}</div>
         </div>
         {err&&<div style={{fontSize:10,color:"#EF4444",textAlign:"center"}}>{err}</div>}
@@ -1389,14 +1389,14 @@ function QuestManager({quests,onSave,onDelete,onBack}) {
   return (
     <div style={{position:"fixed",inset:0,zIndex:8000,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(6px)",display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,padding:"13px 14px",borderBottom:"1px solid rgba(168,85,247,0.1)",flexShrink:0,background:"rgba(0,0,0,0.8)"}}>
-        <button onClick={onBack} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#444",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
+        <button onClick={onBack} style={{background:"rgba(56,139,255,0.15)",border:"1px solid rgba(56,139,255,0.25)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
         <div>
-          <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>GESTION</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>GESTION</div>
           <div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7"}}>MES QUÊTES</div>
         </div>
         {activeTab==="list"&&<button onClick={()=>setEditing({})} style={{marginLeft:"auto",padding:"6px 11px",background:"rgba(168,85,247,0.1)",border:"1px solid rgba(168,85,247,0.3)",borderRadius:8,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:"#A855F7",fontWeight:700}}>+ NOUVELLE</button>}
       </div>
-      <div style={{display:"flex",borderBottom:"1px solid rgba(255,255,255,0.04)",flexShrink:0}}>
+      <div style={{display:"flex",borderBottom:"1px solid rgba(56,139,255,0.15)",flexShrink:0}}>
         {[{id:"list",label:"MES QUÊTES"},{id:"library",label:"📚 BIBLIOTHÈQUE"}].map(t=>(
           <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{flex:1,padding:"8px",background:"none",border:"none",cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:activeTab===t.id?"#A855F7":"#222",borderBottom:activeTab===t.id?"2px solid #A855F7":"2px solid transparent"}}>
             {t.label}
@@ -1452,7 +1452,7 @@ function QuestManager({quests,onSave,onDelete,onBack}) {
             <div style={{fontSize:10,color:"#2A2A3A",fontFamily:"'Rajdhani',sans-serif",marginBottom:11}}>Ajoute des quêtes prédéfinies en 1 tap.</div>
             <div style={{display:"flex",gap:4,marginBottom:11,overflowX:"auto",paddingBottom:4}}>
               {Object.keys(QUEST_LIBRARY).map(cat=>(
-                <button key={cat} onClick={()=>setLibCat(cat)} style={{padding:"5px 10px",background:libCat===cat?"rgba(168,85,247,0.15)":"rgba(255,255,255,0.02)",border:`1px solid ${libCat===cat?"rgba(168,85,247,0.4)":"rgba(255,255,255,0.05)"}`,borderRadius:8,cursor:"pointer",fontSize:8,fontFamily:"'Orbitron',monospace",color:libCat===cat?"#A855F7":"#333",whiteSpace:"nowrap",flexShrink:0}}>
+                <button key={cat} onClick={()=>setLibCat(cat)} style={{padding:"5px 10px",background:libCat===cat?"rgba(168,85,247,0.15)":"rgba(10,20,50,0.6)",border:`1px solid ${libCat===cat?"rgba(168,85,247,0.4)":"rgba(56,139,255,0.18)"}`,borderRadius:8,cursor:"pointer",fontSize:8,fontFamily:"'Orbitron',monospace",color:libCat===cat?"#A855F7":"#333",whiteSpace:"nowrap",flexShrink:0}}>
                   {cat}
                 </button>
               ))}
@@ -1467,7 +1467,7 @@ function QuestManager({quests,onSave,onDelete,onBack}) {
                     <div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:"#B0B8D0"}}>{t.name}</div>
                     <div style={{display:"flex",gap:3,marginTop:1}}>
                       <span style={{fontSize:6,color:rc2.color,fontFamily:"'Orbitron',monospace",border:`1px solid ${rc2.color}33`,borderRadius:2,padding:"0 2px"}}>{r}</span>
-                      <span style={{fontSize:7,color:"#222",fontFamily:"monospace"}}>{t.duration}min · +{RANK_XP[r]}XP · {t.section}</span>
+                      <span style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>{t.duration}min · +{RANK_XP[r]}XP · {t.section}</span>
                     </div>
                   </div>
                   <button onClick={()=>!has&&addLib(t)} style={{padding:"4px 9px",background:has?"rgba(57,255,20,0.08)":"rgba(168,85,247,0.1)",border:`1px solid ${has?"rgba(57,255,20,0.25)":"rgba(168,85,247,0.25)"}`,borderRadius:7,cursor:has?"default":"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:has?"#39FF14":"#A855F7",flexShrink:0}}>
@@ -1541,12 +1541,12 @@ function HeroHeader({totalXp,xpToday,maxXpDay,done,total,streak,rankData,name,ac
             {activeTitle&&<div style={{fontSize:7,color:"#FFD70066",fontFamily:"monospace",fontStyle:"italic",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>✦ {activeTitle.name}</div>}
           </div>
           {/* Big XP rank bar */}
-          <div style={{position:"relative",height:7,background:"rgba(255,255,255,0.04)",borderRadius:4,overflow:"hidden",marginBottom:3,boxShadow:`inset 0 1px 0 rgba(0,0,0,0.4)`}}>
+          <div style={{position:"relative",height:7,background:"rgba(56,139,255,0.15)",borderRadius:4,overflow:"hidden",marginBottom:3,boxShadow:`inset 0 1px 0 rgba(0,0,0,0.4)`}}>
             <div style={{position:"absolute",inset:0,width:`${xpPct*100}%`,background:`linear-gradient(90deg,${c}88,${c})`,borderRadius:4,transition:"width 1s cubic-bezier(.23,1.4,.42,1)",boxShadow:`0 0 8px ${c}`,animation:xpPct>0?"xpBarFill 0.6s ease":"none"}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between"}}>
             <span style={{fontSize:6,color:`${c}66`,fontFamily:"monospace"}}>{xpInRank.toLocaleString()} / {xpForNext.toLocaleString()} XP</span>
-            {nextRank&&<span style={{fontSize:6,color:"#222",fontFamily:"monospace"}}>→ {nextRank.rank} dans {(nextRank.min-totalXp).toLocaleString()} XP</span>}
+            {nextRank&&<span style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace"}}>→ {nextRank.rank} dans {(nextRank.min-totalXp).toLocaleString()} XP</span>}
           </div>
         </div>
         {/* Streak */}
@@ -1562,10 +1562,10 @@ function HeroHeader({totalXp,xpToday,maxXpDay,done,total,streak,rankData,name,ac
             </svg>
             <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
               <span style={{fontSize:9,fontWeight:900,color:c,fontFamily:"'Orbitron',monospace",lineHeight:1}}>{xpToday}</span>
-              <span style={{fontSize:5,color:"#333",fontFamily:"monospace"}}>XP</span>
+              <span style={{fontSize:5,color:"#8BADD4",fontFamily:"monospace"}}>XP</span>
             </div>
           </div>
-          <div style={{background:streak>0?"rgba(239,68,68,0.1)":"rgba(0,0,0,0.4)",border:`1px solid ${streak>0?"rgba(239,68,68,0.25)":"rgba(255,255,255,0.04)"}`,borderRadius:8,padding:"2px 6px",textAlign:"center",minWidth:32}}>
+          <div style={{background:streak>0?"rgba(239,68,68,0.1)":"rgba(0,0,0,0.4)",border:`1px solid ${streak>0?"rgba(239,68,68,0.25)":"rgba(56,139,255,0.15)"}`,borderRadius:8,padding:"2px 6px",textAlign:"center",minWidth:32}}>
             <div style={{animation:streak>0?"fireFlick 1s ease-in-out infinite":"none"}}>
               <SLIcon.flame size={18} color={streak>0?"#EF4444":"#1A1A2A"}/>
             </div>
@@ -1576,7 +1576,7 @@ function HeroHeader({totalXp,xpToday,maxXpDay,done,total,streak,rankData,name,ac
       {/* Quest progress dots — redesigned */}
       {total>0&&(
         <div style={{marginTop:8,display:"flex",gap:2,alignItems:"center"}}>
-          <div style={{flex:1,height:3,background:"rgba(255,255,255,0.04)",borderRadius:2,overflow:"hidden",position:"relative"}}>
+          <div style={{flex:1,height:3,background:"rgba(56,139,255,0.15)",borderRadius:2,overflow:"hidden",position:"relative"}}>
             <div style={{position:"absolute",left:0,top:0,height:"100%",width:`${(done/total)*100}%`,background:`linear-gradient(90deg,${c}66,${c})`,borderRadius:2,transition:"width 0.5s ease",boxShadow:done===total?`0 0 6px ${c}`:"none"}}/>
           </div>
           <span style={{fontSize:7,color:done===total?"#39FF14":c,fontFamily:"'Orbitron',monospace",fontWeight:700,flexShrink:0,marginLeft:4}}>{done}/{total}</span>
@@ -1602,9 +1602,9 @@ function TitlesTab({state,totalXp,streak,onActivate,activeTitle}) {
           <div style={{fontSize:28,flexShrink:0,filter:"drop-shadow(0 0 8px #FFD700)"}}>{t.emoji}</div>
           <div style={{flex:1}}>
             <div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:"#FFD700"}}>{t.name}</div>
-            <div style={{fontSize:7,color:"#444",fontFamily:"monospace"}}>{t.desc}</div>
+            <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>{t.desc}</div>
           </div>
-          <button onClick={()=>onActivate(activeTitle?.id===t.id?null:t)} style={{padding:"5px 9px",background:activeTitle?.id===t.id?"rgba(255,215,0,0.15)":"rgba(255,255,255,0.03)",border:`1px solid ${activeTitle?.id===t.id?"#FFD70066":"rgba(255,255,255,0.07)"}`,borderRadius:7,cursor:"pointer",fontSize:8,color:activeTitle?.id===t.id?"#FFD700":"#222",fontFamily:"'Orbitron',monospace",fontWeight:700}}>
+          <button onClick={()=>onActivate(activeTitle?.id===t.id?null:t)} style={{padding:"5px 9px",background:activeTitle?.id===t.id?"rgba(255,215,0,0.15)":"rgba(10,20,50,0.5)",border:`1px solid ${activeTitle?.id===t.id?"#FFD70066":"rgba(56,139,255,0.22)"}`,borderRadius:7,cursor:"pointer",fontSize:8,color:activeTitle?.id===t.id?"#FFD700":"#222",fontFamily:"'Orbitron',monospace",fontWeight:700}}>
             {activeTitle?.id===t.id?"ÉQUIPÉ":"ÉQUIPER"}
           </button>
         </div>
@@ -1613,7 +1613,7 @@ function TitlesTab({state,totalXp,streak,onActivate,activeTitle}) {
         <>
           <div style={{fontSize:6,color:"#111",fontFamily:"'Orbitron',monospace",letterSpacing:"0.12em",margin:"12px 0 7px"}}>À DÉBLOQUER</div>
           {locked.map(t=>(
-            <div key={t.id} style={{display:"flex",alignItems:"center",gap:11,background:"rgba(0,0,0,0.4)",border:"1px solid rgba(255,255,255,0.03)",borderRadius:13,padding:"9px 12px",marginBottom:5,opacity:0.35}}>
+            <div key={t.id} style={{display:"flex",alignItems:"center",gap:11,background:"rgba(0,0,0,0.4)",border:"1px solid rgba(10,20,50,0.5)",borderRadius:13,padding:"9px 12px",marginBottom:5,opacity:0.35}}>
               <div style={{fontSize:24,flexShrink:0,filter:"grayscale(1)"}}>🔒</div>
               <div style={{flex:1}}>
                 <div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:"#1A1A2A"}}>{t.name}</div>
@@ -1648,7 +1648,7 @@ function Countdown() {
   const color=critical?"#EF4444":urgent?"#F59E0B":"#1A1A2A";
   const fmt=n=>String(n).padStart(2,"0");
   return (
-    <div style={{display:"flex",alignItems:"center",gap:5,padding:"3px 8px",background:critical?"rgba(239,68,68,0.08)":urgent?"rgba(245,158,11,0.06)":"transparent",border:`1px solid ${critical?"rgba(239,68,68,0.25)":urgent?"rgba(245,158,11,0.2)":"rgba(255,255,255,0.04)"}`,borderRadius:8,animation:urgent?"countdownUrgent 1.5s ease-in-out infinite":"none"}}>
+    <div style={{display:"flex",alignItems:"center",gap:5,padding:"3px 8px",background:critical?"rgba(239,68,68,0.08)":urgent?"rgba(245,158,11,0.06)":"transparent",border:`1px solid ${critical?"rgba(239,68,68,0.25)":urgent?"rgba(245,158,11,0.2)":"rgba(56,139,255,0.15)"}`,borderRadius:8,animation:urgent?"countdownUrgent 1.5s ease-in-out infinite":"none"}}>
       <span style={{fontSize:9,animation:critical?"fireFlick 0.8s ease-in-out infinite":"none"}}>{critical?"🔥":urgent?"⏳":"🕐"}</span>
       <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color,letterSpacing:"0.05em"}}>{fmt(h)}:{fmt(m)}:{fmt(s)}</span>
     </div>
@@ -1664,28 +1664,28 @@ function PenaltyScreen({ missed, goldLost, streakLost, bossRegen, onClose }) {
         <div style={{fontSize:7,color:"#EF444488",fontFamily:"'Orbitron',monospace",letterSpacing:"0.4em",marginBottom:16}}>[ SYSTÈME ] AVERTISSEMENT</div>
         <div style={{fontSize:56,marginBottom:12,filter:"drop-shadow(0 0 20px #EF4444)"}}>💀</div>
         <div style={{fontSize:15,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#EF4444",marginBottom:6,lineHeight:1.3}}>MISSION ÉCHOUÉE</div>
-        <div style={{fontSize:10,color:"#555",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.8,marginBottom:20}}>
+        <div style={{fontSize:10,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.8,marginBottom:20}}>
           Tu n'as pas complété tes quêtes hier.<br/>Le Système t'a puni.
         </div>
         <div style={{background:"rgba(239,68,68,0.05)",border:"1px solid rgba(239,68,68,0.2)",borderRadius:14,padding:"14px",marginBottom:18,display:"flex",flexDirection:"column",gap:8}}>
           {goldLost>0&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:10,color:"#888",fontFamily:"'Rajdhani',sans-serif"}}>Gold perdu</span>
+            <span style={{fontSize:10,color:"#A0C0E0",fontFamily:"'Rajdhani',sans-serif"}}>Gold perdu</span>
             <span style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444"}}>-{goldLost} 💰</span>
           </div>}
           {streakLost&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:10,color:"#888",fontFamily:"'Rajdhani',sans-serif"}}>Streak brisé</span>
+            <span style={{fontSize:10,color:"#A0C0E0",fontFamily:"'Rajdhani',sans-serif"}}>Streak brisé</span>
             <span style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444"}}>🔥 → 0</span>
           </div>}
           {bossRegen>0&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:10,color:"#888",fontFamily:"'Rajdhani',sans-serif"}}>Boss régénéré</span>
+            <span style={{fontSize:10,color:"#A0C0E0",fontFamily:"'Rajdhani',sans-serif"}}>Boss régénéré</span>
             <span style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444"}}>+{bossRegen} PV</span>
           </div>}
           {missed>0&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:10,color:"#888",fontFamily:"'Rajdhani',sans-serif"}}>Quêtes manquées</span>
+            <span style={{fontSize:10,color:"#A0C0E0",fontFamily:"'Rajdhani',sans-serif"}}>Quêtes manquées</span>
             <span style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444"}}>{missed}</span>
           </div>}
         </div>
-        <div style={{fontSize:9,color:"#333",fontFamily:"monospace",fontStyle:"italic",marginBottom:18,lineHeight:1.7}}>
+        <div style={{fontSize:9,color:"#8BADD4",fontFamily:"monospace",fontStyle:"italic",marginBottom:18,lineHeight:1.7}}>
           "La faiblesse n'est pas un péché.<br/>La capitulation, si."
         </div>
         <button onClick={onClose} style={{width:"100%",padding:"13px",background:"rgba(239,68,68,0.1)",border:"1px solid #EF4444",borderRadius:12,cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444",letterSpacing:"0.1em"}}>
@@ -1708,9 +1708,9 @@ function Shop({ gold, purchases, activeBoosts, onBuy, onClose }) {
   return (
     <div style={{position:"fixed",inset:0,zIndex:8000,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(6px)",display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,padding:"13px 14px",borderBottom:"1px solid rgba(255,215,0,0.1)",flexShrink:0,background:"rgba(0,0,0,0.8)"}}>
-        <button onClick={onClose} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#444",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
+        <button onClick={onClose} style={{background:"rgba(56,139,255,0.15)",border:"1px solid rgba(56,139,255,0.25)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
         <div>
-          <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>MARCHÉ</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>MARCHÉ</div>
           <div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#FFD700"}}>BOUTIQUE DU SYSTÈME</div>
         </div>
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5,background:"rgba(255,215,0,0.08)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:10,padding:"5px 10px"}}>
@@ -1740,7 +1740,7 @@ function Shop({ gold, purchases, activeBoosts, onBuy, onClose }) {
         {/* Category: Boosts */}
         {[{label:"⚡ BOOSTS",types:["boost"]},{label:"⚔️ COMBAT",types:["instant","shield"]},{label:"🎨 COSMÉTIQUES",types:["cosme"]}].map(cat=>(
           <div key={cat.label} style={{marginBottom:18}}>
-            <div style={{fontSize:7,color:"#555",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:8}}>{cat.label}</div>
+            <div style={{fontSize:7,color:"#7BA7CC",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:8}}>{cat.label}</div>
             {SHOP_ITEMS.filter(i=>cat.types.includes(i.type)).map(item=>{
               const owned = purchases.includes(item.id) && item.type==="cosme";
               const boosted = item.type==="boost" && (activeBoosts[item.id]||0)>now;
@@ -1752,20 +1752,20 @@ function Shop({ gold, purchases, activeBoosts, onBuy, onClose }) {
                     <div style={{width:40,height:40,borderRadius:10,background:`${item.color}15`,border:`1px solid ${item.color}33`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{item.emoji}</div>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:12,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:item.color}}>{item.name}</div>
-                      <div style={{fontSize:9,color:"#333",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
+                      <div style={{fontSize:9,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
                       {boosted&&<div style={{fontSize:7,color:"#39FF14",fontFamily:"monospace",marginTop:2}}>✦ ACTIF · {Math.ceil(((activeBoosts[item.id]||0)-now)/60000)}min restantes</div>}
                     </div>
                     <div style={{flexShrink:0,textAlign:"center"}}>
                       {isConfirming?(
                         <div style={{display:"flex",flexDirection:"column",gap:4}}>
                           <button onClick={()=>buy(item)} style={{padding:"5px 10px",background:`${item.color}22`,border:`1px solid ${item.color}`,borderRadius:7,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:item.color,fontWeight:700}}>OK</button>
-                          <button onClick={()=>setConfirm(null)} style={{padding:"5px 10px",background:"transparent",border:"1px solid #333",borderRadius:7,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:"#333"}}>NON</button>
+                          <button onClick={()=>setConfirm(null)} style={{padding:"5px 10px",background:"transparent",border:"1px solid #333",borderRadius:7,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:"#8BADD4"}}>NON</button>
                         </div>
                       ):(
-                        <button onClick={()=>canAfford&&!owned&&setConfirm(item.id)} style={{padding:"6px 10px",background:owned?"rgba(57,255,20,0.1)":canAfford?`${item.color}15`:"rgba(255,255,255,0.03)",border:`1px solid ${owned?"rgba(57,255,20,0.3)":canAfford?item.color+"44":"rgba(255,255,255,0.07)"}`,borderRadius:8,cursor:canAfford&&!owned?"pointer":"default",minWidth:56,opacity:canAfford||owned?1:0.4}}>
+                        <button onClick={()=>canAfford&&!owned&&setConfirm(item.id)} style={{padding:"6px 10px",background:owned?"rgba(57,255,20,0.1)":canAfford?`${item.color}15`:"rgba(10,20,50,0.5)",border:`1px solid ${owned?"rgba(57,255,20,0.3)":canAfford?item.color+"44":"rgba(56,139,255,0.22)"}`,borderRadius:8,cursor:canAfford&&!owned?"pointer":"default",minWidth:56,opacity:canAfford||owned?1:0.4}}>
                           {owned?<span style={{fontSize:9,color:"#39FF14",fontFamily:"'Orbitron',monospace"}}>✓</span>:(
-                            <><div style={{fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:canAfford?item.color:"#333"}}>{item.cost}</div>
-                            <div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>💰</div></>
+                            <><div style={{fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:canAfford?item.color:"#8BADD4"}}>{item.cost}</div>
+                            <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>💰</div></>
                           )}
                         </button>
                       )}
@@ -1865,7 +1865,7 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
             <BossSVG bossId={boss.id} color={bossWon?"#39FF14":boss.color} size={160} isShaking={bossShake} isDead={bossWon}/>
           </div>
           <div style={{flex:1}}>
-            <div style={{fontSize:7,color:"#333",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em"}}>{boss.title}</div>
+            <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em"}}>{boss.title}</div>
             <div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossWon?"#39FF14":boss.color}}>{boss.name}</div>
             {!bossWon&&<div style={{fontSize:7,color:"#1A1A2A",fontFamily:"monospace",fontStyle:"italic",marginTop:2,lineHeight:1.4}}>"{boss.lore}"</div>}
           </div>
@@ -1884,7 +1884,7 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
           <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:6}}>
             <div style={{flex:1}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>TES PV</span>
+                <span style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>TES PV</span>
                 <span style={{fontSize:8,fontFamily:"'Orbitron',monospace",fontWeight:700,color:pCol}}>{Math.max(0,playerHp)} / {playerMaxHp}</span>
               </div>
               <Bar v={Math.max(0,playerHp)} max={playerMaxHp} color={pCol} h={6}/>
@@ -1900,7 +1900,7 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
             )}
           </div>
           {/* Turn banner */}
-          <div style={{textAlign:"center",padding:"5px 0",borderTop:"1px solid rgba(255,255,255,0.04)"}}>
+          <div style={{textAlign:"center",padding:"5px 0",borderTop:"1px solid rgba(56,139,255,0.15)"}}>
             <span style={{fontSize:8,fontFamily:"'Orbitron',monospace",fontWeight:700,letterSpacing:"0.08em",
               color:isMyTurn?"#39FF14":"#EF4444",
               textShadow:isMyTurn?"0 0 10px #39FF14":"0 0 10px #EF4444",
@@ -1949,7 +1949,7 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
                 <button key={a.id} onClick={()=>!disabled&&onChoose(a)} disabled={disabled}
                   style={{display:"flex",flexDirection:"column",gap:4,textAlign:"left",
                     background:disabled?"rgba(0,0,0,0.3)":`${a.color}0D`,
-                    border:`1px solid ${disabled?"rgba(255,255,255,0.04)":a.color+"35"}`,
+                    border:`1px solid ${disabled?"rgba(56,139,255,0.15)":a.color+"35"}`,
                     borderRadius:12,padding:"10px",cursor:disabled?"default":"pointer",
                     opacity:disabled?0.45:1,transition:"all 0.15s",
                     boxShadow:!disabled?`0 0 8px ${a.color}14`:"none"}}>
@@ -1987,7 +1987,7 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
         <div style={{textAlign:"center",padding:"16px",background:"rgba(57,255,20,0.04)",
           border:"1px solid rgba(57,255,20,0.15)",borderRadius:14}}>
           <div style={{fontSize:11,fontFamily:"'Orbitron',monospace",color:"#39FF14",fontWeight:700}}>✦ DONJON TERMINÉ</div>
-          <div style={{fontSize:8,color:"#222",fontFamily:"monospace",marginTop:3}}>Reviens demain pour un nouveau boss</div>
+          <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace",marginTop:3}}>Reviens demain pour un nouveau boss</div>
         </div>
       )}
     </div>
@@ -2066,15 +2066,15 @@ function PomodoroSheet({quest, onStart, onClose}) {
         boxShadow:"0 -10px 50px rgba(239,68,68,0.18)"}} onClick={e=>e.stopPropagation()}>
         <div style={{width:36,height:3,borderRadius:2,background:"rgba(255,255,255,0.1)",margin:"0 auto 18px"}}/>
         <div style={{fontSize:8,color:"#EF4444",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:4}}>⏱  POMODORO</div>
-        <div style={{fontSize:15,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:"#E0E8FF",marginBottom:16}}>{quest?.name}</div>
+        <div style={{fontSize:15,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:"#D0EAFF",marginBottom:16}}>{quest?.name}</div>
 
         <div style={{marginBottom:14}}>
-          <div style={{fontSize:7,color:"#444",fontFamily:"'Orbitron',monospace",marginBottom:8}}>DURÉE FOCUS</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",marginBottom:8}}>DURÉE FOCUS</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
             {WS.map(m=>(
               <button key={m} onClick={()=>setWork(m)} style={{padding:"7px 13px",borderRadius:9,
-                background:workMins===m?"rgba(239,68,68,0.18)":"rgba(255,255,255,0.03)",
-                border:`1px solid ${workMins===m?"#EF4444":"rgba(255,255,255,0.07)"}`,
+                background:workMins===m?"rgba(239,68,68,0.18)":"rgba(10,20,50,0.5)",
+                border:`1px solid ${workMins===m?"#EF4444":"rgba(56,139,255,0.22)"}`,
                 cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",
                 color:workMins===m?"#EF4444":"#444",fontWeight:workMins===m?700:400}}>
                 {m}m
@@ -2084,12 +2084,12 @@ function PomodoroSheet({quest, onStart, onClose}) {
         </div>
 
         <div style={{marginBottom:18}}>
-          <div style={{fontSize:7,color:"#444",fontFamily:"'Orbitron',monospace",marginBottom:8}}>DURÉE PAUSE</div>
+          <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",marginBottom:8}}>DURÉE PAUSE</div>
           <div style={{display:"flex",gap:6}}>
             {BS.map(m=>(
               <button key={m} onClick={()=>setBreak(m)} style={{padding:"7px 16px",borderRadius:9,
-                background:breakMins===m?"rgba(52,211,153,0.15)":"rgba(255,255,255,0.03)",
-                border:`1px solid ${breakMins===m?"#34D399":"rgba(255,255,255,0.07)"}`,
+                background:breakMins===m?"rgba(52,211,153,0.15)":"rgba(10,20,50,0.5)",
+                border:`1px solid ${breakMins===m?"#34D399":"rgba(56,139,255,0.22)"}`,
                 cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",
                 color:breakMins===m?"#34D399":"#444",fontWeight:breakMins===m?700:400}}>
                 {m}m
@@ -2099,7 +2099,7 @@ function PomodoroSheet({quest, onStart, onClose}) {
         </div>
 
         <div style={{background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.1)",
-          borderRadius:11,padding:"10px 12px",marginBottom:16,fontSize:8,color:"#444",fontFamily:"monospace",lineHeight:1.7}}>
+          borderRadius:11,padding:"10px 12px",marginBottom:16,fontSize:8,color:"#8BADD4",fontFamily:"monospace",lineHeight:1.7}}>
           🔴 {workMins}min focus → 🟢 {breakMins}min pause → répète<br/>
           ⚔️ Boss subit ~{workMins*2} dégâts par session focus<br/>
           ✦ Quête auto-cochée à la fin
@@ -2133,7 +2133,7 @@ function PomodoroWidget({sess, onPause, onFinish, onCancel}) {
       padding:"11px 14px",display:"flex",alignItems:"center",gap:12,
       boxShadow:`0 4px 36px ${col}22`,maxWidth:340,width:"92%",backdropFilter:"blur(20px)"}}>
       <svg width={CX*2} height={CX*2} viewBox={`0 0 ${CX*2} ${CX*2}`} style={{flexShrink:0}}>
-        <circle cx={CX} cy={CX} r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={3}/>
+        <circle cx={CX} cy={CX} r={R} fill="none" stroke="rgba(56,139,255,0.18)" strokeWidth={3}/>
         <circle cx={CX} cy={CX} r={R} fill="none" stroke={col} strokeWidth={3}
           strokeDasharray={circ} strokeDashoffset={circ*(1-pct)}
           strokeLinecap="round" transform={`rotate(-90 ${CX} ${CX})`}
@@ -2150,9 +2150,9 @@ function PomodoroWidget({sess, onPause, onFinish, onCancel}) {
         <div style={{fontSize:9,color:"#777",fontFamily:"monospace",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{sess.questName}</div>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:5,flexShrink:0}}>
-        <button onClick={onPause} style={{padding:"5px 9px",background:"rgba(255,255,255,0.05)",
+        <button onClick={onPause} style={{padding:"5px 9px",background:"rgba(56,139,255,0.18)",
           border:"1px solid rgba(255,255,255,0.09)",borderRadius:7,cursor:"pointer",
-          fontSize:10,color:"#888",fontFamily:"monospace"}}>{sess.paused?"▶":"⏸"}</button>
+          fontSize:10,color:"#A0C0E0",fontFamily:"monospace"}}>{sess.paused?"▶":"⏸"}</button>
         <button onClick={onFinish} style={{padding:"5px 9px",background:"rgba(57,255,20,0.08)",
           border:"1px solid rgba(57,255,20,0.25)",borderRadius:7,cursor:"pointer",
           fontSize:8,color:"#39FF14",fontFamily:"'Orbitron',monospace",fontWeight:700}}>FIN ✓</button>
@@ -2217,10 +2217,10 @@ function WeeklyPanel({weeklyProgress,weeklyQuests,wk,onToggle,color}) {
           return (
             <div key={q.id} onClick={()=>onToggle(q.id)}
               style={{display:"flex",alignItems:"center",gap:10,padding:"9px 10px",borderRadius:11,marginBottom:5,cursor:"pointer",
-                background:isDone?`${color}10`:"rgba(255,255,255,0.02)",
-                border:`1px solid ${isDone?color+"35":"rgba(255,255,255,0.05)"}`,
+                background:isDone?`${color}10`:"rgba(10,20,50,0.6)",
+                border:`1px solid ${isDone?color+"35":"rgba(56,139,255,0.18)"}`,
                 boxShadow:isDone?`0 2px 12px ${color}18`:"none",transition:"all 0.2s"}}>
-              <div style={{width:22,height:22,borderRadius:7,flexShrink:0,background:isDone?`linear-gradient(135deg,${color},${color}88)`:"rgba(255,255,255,0.04)",border:`2px solid ${isDone?color:"rgba(255,255,255,0.08)"}`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:isDone?`0 0 8px ${color}55`:"none",transition:"all 0.2s"}}>
+              <div style={{width:22,height:22,borderRadius:7,flexShrink:0,background:isDone?`linear-gradient(135deg,${color},${color}88)`:"rgba(56,139,255,0.15)",border:`2px solid ${isDone?color:"rgba(56,139,255,0.25)"}`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:isDone?`0 0 8px ${color}55`:"none",transition:"all 0.2s"}}>
                 {isDone&&<span style={{color:"#000",fontSize:10,fontWeight:900}}>✓</span>}
               </div>
               <span style={{fontSize:17,flexShrink:0}}>{q.emoji}</span>
@@ -2260,17 +2260,17 @@ function AntaresPanel({antaresHp,color,onAttack,alreadyHitToday}) {
           <div style={{flex:1}}>
             <div style={{fontSize:6,color:"#C026D366",fontFamily:"'Orbitron',monospace",letterSpacing:"0.25em",marginBottom:2}}>⬛ BOSS MENSUEL</div>
             <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:900,color:defeated?"#39FF14":"#C026D3",textShadow:`0 0 12px ${defeated?"#39FF14":"#C026D3"}`}}>ANTARES</div>
-            <div style={{fontSize:8,color:"#444",fontFamily:"monospace",marginTop:1}}>{defeated?"✦ VAINCU CE MOIS":`Roi des Démons · ${daysLeft}j restants`}</div>
+            <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace",marginTop:1}}>{defeated?"✦ VAINCU CE MOIS":`Roi des Démons · ${daysLeft}j restants`}</div>
           </div>
           {!defeated&&<div style={{textAlign:"center",flexShrink:0}}>
             <div style={{fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#C026D3"}}>{antaresHp}</div>
-            <div style={{fontSize:6,color:"#333",fontFamily:"monospace"}}>PV restants</div>
+            <div style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace"}}>PV restants</div>
           </div>}
         </div>
         {/* HP bar */}
         {!defeated&&(
           <div style={{marginBottom:10}}>
-            <div style={{height:8,background:"rgba(255,255,255,0.04)",borderRadius:4,overflow:"hidden",boxShadow:"inset 0 2px 4px rgba(0,0,0,0.5)"}}>
+            <div style={{height:8,background:"rgba(56,139,255,0.15)",borderRadius:4,overflow:"hidden",boxShadow:"inset 0 2px 4px rgba(0,0,0,0.5)"}}>
               <div style={{height:"100%",width:`${pct*100}%`,background:`linear-gradient(90deg,${hpCol}88,${hpCol})`,borderRadius:4,transition:"width 0.8s ease",boxShadow:`0 0 8px ${hpCol}`}}/>
             </div>
           </div>
@@ -2278,7 +2278,7 @@ function AntaresPanel({antaresHp,color,onAttack,alreadyHitToday}) {
         {/* Daily hit button */}
         {!defeated&&(
           <button onClick={onAttack} disabled={alreadyHitToday}
-            style={{width:"100%",padding:"10px",background:alreadyHitToday?"rgba(255,255,255,0.02)":"rgba(192,38,211,0.12)",border:`1px solid ${alreadyHitToday?"rgba(255,255,255,0.04)":"rgba(192,38,211,0.4)"}`,borderRadius:11,cursor:alreadyHitToday?"default":"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:alreadyHitToday?"#1A1A2A":"#C026D3",letterSpacing:"0.08em",boxShadow:alreadyHitToday?"none":"0 0 16px rgba(192,38,211,0.2)"}}>
+            style={{width:"100%",padding:"10px",background:alreadyHitToday?"rgba(10,20,50,0.6)":"rgba(192,38,211,0.12)",border:`1px solid ${alreadyHitToday?"rgba(56,139,255,0.15)":"rgba(192,38,211,0.4)"}`,borderRadius:11,cursor:alreadyHitToday?"default":"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:alreadyHitToday?"#1A1A2A":"#C026D3",letterSpacing:"0.08em",boxShadow:alreadyHitToday?"none":"0 0 16px rgba(192,38,211,0.2)"}}>
             {alreadyHitToday?"⏳ FRAPPE JOURNALIÈRE EFFECTUÉE":"⚡ FRAPPER ANTARES (-50 PV)"}
           </button>
         )}
@@ -2320,7 +2320,7 @@ function BetModal({quest,gold,onBet,onClose}) {
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <button onClick={onClose} style={{flex:1,padding:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:11,cursor:"pointer",fontSize:10,color:"#333",fontFamily:"'Orbitron',monospace",fontWeight:700}}>ANNULER</button>
+          <button onClick={onClose} style={{flex:1,padding:"10px",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(56,139,255,0.22)",borderRadius:11,cursor:"pointer",fontSize:10,color:"#8BADD4",fontFamily:"'Orbitron',monospace",fontWeight:700}}>ANNULER</button>
           <button onClick={()=>onBet(amount)} disabled={gold<5||max<5}
             style={{flex:2,padding:"10px",background:"rgba(255,215,0,0.1)",border:"1px solid rgba(255,215,0,0.3)",borderRadius:11,cursor:"pointer",fontSize:10,color:"#FFD700",fontFamily:"'Orbitron',monospace",fontWeight:700,boxShadow:"0 0 12px rgba(255,215,0,0.15)"}}>
             ⚡ MISER {amount}g
@@ -2367,13 +2367,13 @@ function BossCounterScreen({boss,goldLost,onClose}) {
         {phase>=1&&<div style={{fontSize:16,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#EF4444",marginBottom:6,animation:"bossCounter 0.4s ease"}}>
           {boss.name.toUpperCase()} ATTAQUE !
         </div>}
-        {phase>=1&&<div style={{fontSize:10,color:"#555",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:16,fontStyle:"italic",animation:"fadeIn 0.4s ease"}}>
+        {phase>=1&&<div style={{fontSize:10,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:16,fontStyle:"italic",animation:"fadeIn 0.4s ease"}}>
           "{boss.atkMsg?.[0]||"Tu faiblis, Chasseur."}"
         </div>}
         {phase>=2&&(
           <div style={{background:"rgba(239,68,68,0.06)",border:"1px solid rgba(239,68,68,0.2)",borderRadius:14,padding:"14px",marginBottom:18,animation:"bossCounter 0.4s ease"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <span style={{fontSize:10,color:"#888",fontFamily:"'Rajdhani',sans-serif"}}>Gold volé par le boss</span>
+              <span style={{fontSize:10,color:"#A0C0E0",fontFamily:"'Rajdhani',sans-serif"}}>Gold volé par le boss</span>
               <span style={{fontSize:16,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#EF4444"}}>-{goldLost} 💰</span>
             </div>
           </div>
@@ -2394,10 +2394,10 @@ function AwakenAttack({streak,onAttack,used}) {
       <div style={{display:"flex",alignItems:"center",gap:8}}>
         <span style={{fontSize:18}}>🔒</span>
         <div style={{flex:1}}>
-          <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:"#333",fontWeight:700}}>FORME ÉVEILLÉE</div>
+          <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:"#8BADD4",fontWeight:700}}>FORME ÉVEILLÉE</div>
           <div style={{fontSize:7,color:"#1A1A2A",fontFamily:"monospace"}}>Streak 7j requis · actuellement {streak}j</div>
         </div>
-        <div style={{fontSize:8,fontFamily:"'Orbitron',monospace",color:"#222"}}>×3 DMG</div>
+        <div style={{fontSize:8,fontFamily:"'Orbitron',monospace",color:"#8BADD4"}}>×3 DMG</div>
       </div>
     </div>
   );
@@ -2412,7 +2412,7 @@ function AwakenAttack({streak,onAttack,used}) {
       </div>
       <div style={{flexShrink:0,textAlign:"right"}}>
         <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:900,color:used?"#444":"#FFD700"}}>×3</div>
-        <div style={{fontSize:6,color:"#222",fontFamily:"monospace"}}>DMG</div>
+        <div style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace"}}>DMG</div>
       </div>
     </button>
   );
@@ -2440,12 +2440,12 @@ function BilanScreen({quests,done,totalXp,streak,boss,bossWon,onClose}) {
         <div style={{width:88,height:88,borderRadius:20,background:`${gradeColor}12`,border:`3px solid ${gradeColor}`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",boxShadow:`0 0 30px ${gradeColor}44`}}>
           <span style={{fontSize:46,fontFamily:"'Orbitron',monospace",fontWeight:900,color:gradeColor,textShadow:`0 0 20px ${gradeColor}`}}>{grade}</span>
         </div>
-        <div style={{fontSize:10,color:"#444",fontFamily:"monospace",fontStyle:"italic",marginBottom:18,lineHeight:1.7}}>"{msg}"</div>
+        <div style={{fontSize:10,color:"#8BADD4",fontFamily:"monospace",fontStyle:"italic",marginBottom:18,lineHeight:1.7}}>"{msg}"</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:16}}>
           {[{l:"QUÊTES",v:`${done.length}/${quests.length}`,c:gradeColor},{l:"XP GAGNÉ",v:`+${xpToday}`,c:"#A855F7"},{l:"STREAK",v:`${streak}🔥`,c:"#EF4444"}].map(k=>(
             <div key={k.l} style={{background:"rgba(0,0,0,0.6)",border:`1px solid ${k.c}22`,borderRadius:10,padding:"8px 6px"}}>
               <div style={{fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:k.c}}>{k.v}</div>
-              <div style={{fontSize:6,color:"#222",fontFamily:"monospace",marginTop:2}}>{k.l}</div>
+              <div style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace",marginTop:2}}>{k.l}</div>
             </div>
           ))}
         </div>
@@ -2453,7 +2453,7 @@ function BilanScreen({quests,done,totalXp,streak,boss,bossWon,onClose}) {
           <BossSVG bossId={boss.id} color={bossWon?"#39FF14":boss.color} size={32} isDead={bossWon}/>
           <div style={{textAlign:"left"}}>
             <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossWon?"#39FF14":"#EF4444"}}>{boss.name} — {bossWon?"VAINCU":"EN VIE"}</div>
-            <div style={{fontSize:8,color:"#333",fontFamily:"monospace"}}>{bossWon?"Boss éliminé. Bravo, Chasseur.":"Reviens demain pour l'affronter."}</div>
+            <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>{bossWon?"Boss éliminé. Bravo, Chasseur.":"Reviens demain pour l'affronter."}</div>
           </div>
         </div>
         <button onClick={onClose} style={{width:"100%",padding:"12px",background:`${gradeColor}12`,border:`1px solid ${gradeColor}`,borderRadius:12,cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:gradeColor,letterSpacing:"0.1em"}}>
@@ -2473,7 +2473,7 @@ function CalendarView({history,quests}) {
   const firstDay=new Date(viewYear,viewMonth,1).getDay();
   const totalQ=quests.length||1;
   const monthNames=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-  const getColor=pct=>{if(pct===0)return"rgba(255,255,255,0.04)";if(pct<0.4)return"rgba(239,68,68,0.4)";if(pct<0.7)return"rgba(245,158,11,0.5)";if(pct<1)return"rgba(96,165,250,0.55)";return"rgba(57,255,20,0.7)";};
+  const getColor=pct=>{if(pct===0)return"rgba(56,139,255,0.15)";if(pct<0.4)return"rgba(239,68,68,0.4)";if(pct<0.7)return"rgba(245,158,11,0.5)";if(pct<1)return"rgba(96,165,250,0.55)";return"rgba(57,255,20,0.7)";};
   const cells=[];
   const offset=firstDay===0?6:firstDay-1; // Monday-first grid
   for(let i=0;i<offset;i++)cells.push(null);
@@ -2489,18 +2489,18 @@ function CalendarView({history,quests}) {
       {/* Header */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <button onClick={()=>{if(viewMonth===0){setViewMonth(11);setViewYear(y=>y-1);}else setViewMonth(m=>m-1);}}
-          style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#888",fontSize:16,lineHeight:1}}>‹</button>
+          style={{background:"rgba(56,139,255,0.18)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#A0C0E0",fontSize:16,lineHeight:1}}>‹</button>
         <div style={{textAlign:"center"}}>
           <div style={{fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",letterSpacing:"0.05em"}}>{monthNames[viewMonth]} {viewYear}</div>
-          <div style={{fontSize:8,color:"#444",fontFamily:"monospace",marginTop:2}}>{totalActive} jours actifs · {totalPerfect} parfaits</div>
+          <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace",marginTop:2}}>{totalActive} jours actifs · {totalPerfect} parfaits</div>
         </div>
         <button onClick={()=>{if(viewMonth===11){setViewMonth(0);setViewYear(y=>y+1);}else setViewMonth(m=>m+1);}}
-          style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#888",fontSize:16,lineHeight:1}}>›</button>
+          style={{background:"rgba(56,139,255,0.18)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:8,padding:"6px 12px",cursor:"pointer",color:"#A0C0E0",fontSize:16,lineHeight:1}}>›</button>
       </div>
       {/* Day labels */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3,marginBottom:4}}>
         {["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"].map((d,i)=>(
-          <div key={i} style={{textAlign:"center",fontSize:8,color:"#333",fontFamily:"monospace",padding:"2px 0"}}>{d}</div>
+          <div key={i} style={{textAlign:"center",fontSize:8,color:"#8BADD4",fontFamily:"monospace",padding:"2px 0"}}>{d}</div>
         ))}
       </div>
       {/* Day cells */}
@@ -2511,13 +2511,13 @@ function CalendarView({history,quests}) {
             <div key={c.k} style={{
               aspectRatio:"1",borderRadius:6,
               background:getColor(c.pct),
-              border:c.isToday?"2px solid #A855F7":"1px solid rgba(255,255,255,0.04)",
+              border:c.isToday?"2px solid #A855F7":"1px solid rgba(56,139,255,0.15)",
               display:"flex",alignItems:"center",justifyContent:"center",
               position:"relative",
               boxShadow:c.isToday?"0 0 8px rgba(168,85,247,0.5)":c.pct>=1?"0 0 5px rgba(57,255,20,0.3)":"none",
             }}>
               <span style={{fontSize:9,color:c.pct>0.05?"rgba(0,0,0,0.8)":"#333",fontFamily:"'Orbitron',monospace",fontWeight:c.isToday?900:500,lineHeight:1}}>{c.d}</span>
-              {c.pct>=1&&<div style={{position:"absolute",top:2,right:2,width:4,height:4,borderRadius:"50%",background:"#000",opacity:0.5}}/>}
+              {c.pct>=1&&<div style={{position:"absolute",top:2,right:2,width:4,height:4,borderRadius:"50%",background:"#020B18",opacity:0.5}}/>}
             </div>
           )
         )}
@@ -2527,7 +2527,7 @@ function CalendarView({history,quests}) {
         {[{c:getColor(0),l:"Vide"},{c:getColor(0.3),l:"<40%"},{c:getColor(0.55),l:"<70%"},{c:getColor(0.85),l:"<100%"},{c:getColor(1),l:"100% ✦"}].map(({c,l})=>(
           <div key={l} style={{display:"flex",alignItems:"center",gap:4}}>
             <div style={{width:10,height:10,borderRadius:3,background:c,flexShrink:0}}/>
-            <span style={{fontSize:8,color:"#333",fontFamily:"monospace"}}>{l}</span>
+            <span style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>{l}</span>
           </div>
         ))}
       </div>
@@ -2562,7 +2562,7 @@ function StatsTab({history,quests,totalXp,streak,gold,defeatedBosses}) {
           {last7.map(d=>{const h=Math.max(4,(d.xp/maxXp)*55);return(
             <div key={d.k} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
               <div style={{fontSize:7,color:d.full?"#39FF14":d.xp>0?"#FFD700":"#1A1A2A",fontFamily:"monospace"}}>{d.xp||""}</div>
-              <div style={{width:"100%",height:d.xp>0?h:4,borderRadius:"3px 3px 0 0",background:d.full?"linear-gradient(0deg,#39FF14,#39FF1455)":d.xp>0?"linear-gradient(0deg,#A855F7,#A855F744)":"rgba(255,255,255,0.03)",transition:"height 0.5s ease"}}/>
+              <div style={{width:"100%",height:d.xp>0?h:4,borderRadius:"3px 3px 0 0",background:d.full?"linear-gradient(0deg,#39FF14,#39FF1455)":d.xp>0?"linear-gradient(0deg,#A855F7,#A855F744)":"rgba(10,20,50,0.5)",transition:"height 0.5s ease"}}/>
             </div>
           );})}
         </div>
@@ -2576,8 +2576,8 @@ function StatsTab({history,quests,totalXp,streak,gold,defeatedBosses}) {
           </div>
         ))}
       </div>
-      <div style={{background:"rgba(0,0,0,0.7)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:14,padding:"13px",marginBottom:12,backdropFilter:"blur(8px)"}}>
-        <div style={{fontSize:7,color:"#555",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:10}}>PERFORMANCE PAR SECTION</div>
+      <div style={{background:"rgba(0,0,0,0.7)",border:"1px solid rgba(56,139,255,0.25)",boxShadow:"0 0 12px rgba(56,139,255,0.08)",borderRadius:14,padding:"13px",marginBottom:12,backdropFilter:"blur(8px)"}}>
+        <div style={{fontSize:7,color:"#7BA7CC",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:10}}>PERFORMANCE PAR SECTION</div>
         {sectionStats.map(({sec,pct,color})=>(
           <div key={sec} style={{marginBottom:8}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
@@ -2588,8 +2588,8 @@ function StatsTab({history,quests,totalXp,streak,gold,defeatedBosses}) {
           </div>
         ))}
       </div>
-      <div style={{background:"rgba(0,0,0,0.7)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:14,padding:"13px",marginBottom:12,backdropFilter:"blur(8px)"}}>
-        <div style={{fontSize:7,color:"#555",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:10}}>TAUX PAR JOUR DE SEMAINE</div>
+      <div style={{background:"rgba(0,0,0,0.7)",border:"1px solid rgba(56,139,255,0.25)",boxShadow:"0 0 12px rgba(56,139,255,0.08)",borderRadius:14,padding:"13px",marginBottom:12,backdropFilter:"blur(8px)"}}>
+        <div style={{fontSize:7,color:"#7BA7CC",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:10}}>TAUX PAR JOUR DE SEMAINE</div>
         <div style={{display:"flex",gap:3,alignItems:"flex-end",height:50}}>
           {dayStats.map(({day,rate},i)=>{
             const h=Math.max(4,rate*44);
@@ -2604,12 +2604,12 @@ function StatsTab({history,quests,totalXp,streak,gold,defeatedBosses}) {
         </div>
       </div>
       <div style={{marginBottom:12}}>
-        <div style={{fontSize:7,color:"#555",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:8}}>CALENDRIER DE PROGRESSION</div>
+        <div style={{fontSize:7,color:"#7BA7CC",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em",marginBottom:8}}>CALENDRIER DE PROGRESSION</div>
         <CalendarView history={history} quests={quests}/>
       </div>
-      <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:8}}>BOSS REGISTRY ({defeatedBosses.length}/{BOSSES.filter(b=>!b.isMonarch).length})</div>
+      <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:8}}>BOSS REGISTRY ({defeatedBosses.length}/{BOSSES.filter(b=>!b.isMonarch).length})</div>
       {BOSSES.filter(b=>!b.isMonarch).map(b=>{const k=defeatedBosses?.includes(b.id);return(
-        <div key={b.id} style={{display:"flex",alignItems:"center",gap:10,background:k?"rgba(57,255,20,0.03)":"rgba(0,0,0,0.5)",border:`1px solid ${k?"rgba(57,255,20,0.15)":"rgba(255,255,255,0.03)"}`,borderRadius:10,padding:"7px 10px",marginBottom:5,opacity:k?1:0.3}}>
+        <div key={b.id} style={{display:"flex",alignItems:"center",gap:10,background:k?"rgba(57,255,20,0.03)":"rgba(0,0,0,0.5)",border:`1px solid ${k?"rgba(57,255,20,0.15)":"rgba(10,20,50,0.5)"}`,borderRadius:10,padding:"7px 10px",marginBottom:5,opacity:k?1:0.3}}>
           <div style={{flexShrink:0}}><BossSVG bossId={b.id} color={k?"#39FF14":b.color} size={30}/></div>
           <div style={{flex:1}}><div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:k?"#39FF14":"#1A1A2A"}}>{b.name}</div><div style={{fontSize:7,color:"#111",fontFamily:"monospace"}}>{b.title}</div></div>
           {k&&<span style={{fontSize:9,color:"#39FF14",fontFamily:"'Orbitron',monospace",fontWeight:700}}>✦</span>}
@@ -2631,25 +2631,25 @@ function ImportExport({state,onImport,onClose}) {
   return (
     <div style={{position:"fixed",inset:0,zIndex:8500,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(6px)",display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,padding:"13px 14px",borderBottom:"1px solid rgba(168,85,247,0.1)",flexShrink:0}}>
-        <button onClick={onClose} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#444",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
-        <div><div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>DONNÉES</div><div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7"}}>IMPORT / EXPORT</div></div>
+        <button onClick={onClose} style={{background:"rgba(56,139,255,0.15)",border:"1px solid rgba(56,139,255,0.25)",borderRadius:8,padding:"6px 10px",cursor:"pointer",fontSize:11,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>← RET.</button>
+        <div><div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>DONNÉES</div><div style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7"}}>IMPORT / EXPORT</div></div>
       </div>
-      <div style={{display:"flex",borderBottom:"1px solid rgba(255,255,255,0.04)",flexShrink:0}}>
+      <div style={{display:"flex",borderBottom:"1px solid rgba(56,139,255,0.15)",flexShrink:0}}>
         {[{id:"export",label:"📤 EXPORTER"},{id:"import",label:"📥 IMPORTER"}].map(t=>(
           <button key={t.id} onClick={()=>{setMode(t.id);setErr("");}} style={{flex:1,padding:"8px",background:"none",border:"none",cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:mode===t.id?"#A855F7":"#222",borderBottom:mode===t.id?"2px solid #A855F7":"2px solid transparent"}}>{t.label}</button>
         ))}
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"14px"}}>
         {mode==="export"&&(<div>
-          <div style={{fontSize:9,color:"#555",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:12}}>Copie ce JSON pour sauvegarder toutes tes données : quêtes, historique, XP, gold, boss vaincus.</div>
-          <textarea readOnly value={exportData} style={{width:"100%",height:200,background:"rgba(0,0,0,0.7)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:10,padding:"10px",color:"#555",fontFamily:"monospace",fontSize:8,resize:"none"}}/>
+          <div style={{fontSize:9,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:12}}>Copie ce JSON pour sauvegarder toutes tes données : quêtes, historique, XP, gold, boss vaincus.</div>
+          <textarea readOnly value={exportData} style={{width:"100%",height:200,background:"rgba(0,0,0,0.7)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:10,padding:"10px",color:"#7BA7CC",fontFamily:"monospace",fontSize:8,resize:"none"}}/>
           <button onClick={copy} style={{width:"100%",marginTop:10,padding:"12px",background:copied?"rgba(57,255,20,0.1)":"rgba(168,85,247,0.1)",border:`1px solid ${copied?"#39FF14":"#A855F7"}`,borderRadius:12,cursor:"pointer",fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:copied?"#39FF14":"#A855F7"}}>
             {copied?"✓ COPIÉ !":"📋 COPIER LE JSON"}
           </button>
         </div>)}
         {mode==="import"&&(<div>
-          <div style={{fontSize:9,color:"#555",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:12}}>Colle ici un JSON exporté depuis ARISE.<br/><span style={{color:"#EF444466"}}>⚠️ Cela remplacera toutes tes données actuelles.</span></div>
-          <textarea value={importText} onChange={e=>setImportText(e.target.value)} placeholder="Colle ton JSON ici..." style={{width:"100%",height:200,background:"rgba(0,0,0,0.7)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:10,padding:"10px",color:"#E0E8FF",fontFamily:"monospace",fontSize:8,resize:"none",userSelect:"text"}}/>
+          <div style={{fontSize:9,color:"#7BA7CC",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.7,marginBottom:12}}>Colle ici un JSON exporté depuis ARISE.<br/><span style={{color:"#EF444466"}}>⚠️ Cela remplacera toutes tes données actuelles.</span></div>
+          <textarea value={importText} onChange={e=>setImportText(e.target.value)} placeholder="Colle ton JSON ici..." style={{width:"100%",height:200,background:"rgba(0,0,0,0.7)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:10,padding:"10px",color:"#D0EAFF",fontFamily:"monospace",fontSize:8,resize:"none",userSelect:"text"}}/>
           {err&&<div style={{fontSize:9,color:"#EF4444",marginTop:6,fontFamily:"monospace"}}>{err}</div>}
           <button onClick={doImport} style={{width:"100%",marginTop:10,padding:"12px",background:"rgba(168,85,247,0.1)",border:"1px solid #A855F7",borderRadius:12,cursor:"pointer",fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7"}}>
             📥 IMPORTER ET RESTAURER
@@ -2730,10 +2730,10 @@ function QuestSection({sec,sm,nd,sq,done,activeBet,gold,generatedAtkNames,onTogg
                 style={{
                   display:"flex",alignItems:"center",gap:9,
                   background:isDone?`linear-gradient(135deg,${q.color}14,${q.color}08)`:hasBet?"rgba(255,215,0,0.04)":isDragging?"rgba(168,85,247,0.06)":"rgba(8,8,12,0.85)",
-                  border:`1px solid ${isDone?q.color+"50":hasBet?"rgba(255,215,0,0.3)":isDragging?"rgba(168,85,247,0.4)":"rgba(255,255,255,0.06)"}`,
+                  border:`1px solid ${isDone?q.color+"50":hasBet?"rgba(255,215,0,0.3)":isDragging?"rgba(168,85,247,0.4)":"rgba(56,139,255,0.2)"}`,
                   borderRadius:14,padding:"10px 11px",cursor:"pointer",
                   backdropFilter:"blur(12px)",
-                  boxShadow:isDone?`0 4px 20px ${q.color}22,inset 0 1px 0 ${q.color}20`:isDragging?"0 8px 24px rgba(168,85,247,0.2)":hasBet?"0 0 12px rgba(255,215,0,0.15)":"0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.03)",
+                  boxShadow:isDone?`0 4px 20px ${q.color}22,inset 0 1px 0 ${q.color}20`:isDragging?"0 8px 24px rgba(168,85,247,0.2)":hasBet?"0 0 12px rgba(255,215,0,0.15)":"0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(10,20,50,0.5)",
                   transition:"box-shadow 0.2s,border 0.2s","--qc":q.color,
                   animation:isDone?"questGlow 0.5s ease forwards":"none",
                 }}>
@@ -3250,7 +3250,7 @@ export default function App() {
   if(showEntry)return <DungeonEntry boss={todayBoss} rankData={{...rankData,color:effectiveColor}} onEnter={()=>setShowEntry(false)}/>;
 
   return (
-    <div style={{background:"#000",maxWidth:420,margin:"0 auto",fontFamily:"'Rajdhani',sans-serif",color:"#E0E8FF",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",height:"100vh"}}>
+    <div style={{background:"#020B18",maxWidth:420,margin:"0 auto",fontFamily:"'Rajdhani',sans-serif",color:"#D0EAFF",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",height:"100vh"}}>
       <style>{CSS}</style>
       <MangaHero color={effectiveColor} rank={rankData.rank} questsDoneToday={done.length} totalQuests={s.quests.length}/>
       <AmbientParticles rank={rankData.rank} color={effectiveColor}/>
@@ -3273,9 +3273,9 @@ export default function App() {
           <div style={{background:"#0D000F",border:"1px solid rgba(239,68,68,0.3)",borderRadius:16,padding:22,width:255,textAlign:"center"}}>
             <div style={{fontSize:24,marginBottom:7}}>⚠️</div>
             <div style={{fontSize:11,fontFamily:"'Orbitron',monospace",color:"#EF4444",fontWeight:700,marginBottom:5}}>SUPPRIMER ?</div>
-            <div style={{fontSize:10,color:"#444",fontFamily:"'Rajdhani',sans-serif",marginBottom:16}}>Cette quête sera effacée définitivement.</div>
+            <div style={{fontSize:10,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",marginBottom:16}}>Cette quête sera effacée définitivement.</div>
             <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>setDelConfirm(null)} style={{flex:1,padding:"9px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:9,cursor:"pointer",fontSize:9,color:"#444",fontFamily:"'Orbitron',monospace"}}>ANNULER</button>
+              <button onClick={()=>setDelConfirm(null)} style={{flex:1,padding:"9px",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(56,139,255,0.22)",borderRadius:9,cursor:"pointer",fontSize:9,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>ANNULER</button>
               <button onClick={()=>deleteQuest(delConfirm)} style={{flex:1,padding:"9px",background:"rgba(239,68,68,0.1)",border:"1px solid #EF4444",borderRadius:9,cursor:"pointer",fontSize:9,color:"#EF4444",fontFamily:"'Orbitron',monospace",fontWeight:700}}>SUPPRIMER</button>
             </div>
           </div>
@@ -3298,7 +3298,7 @@ export default function App() {
           <div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,215,0,0.06)",border:"1px solid rgba(255,215,0,0.15)",borderRadius:8,padding:"3px 8px",cursor:"pointer"}} onClick={()=>setShowShop(true)}>
             <span style={{fontSize:11}}>💰</span>
             <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#FFD700"}}>{s.gold}</span>
-            <span style={{fontSize:7,color:"#333",fontFamily:"'Orbitron',monospace"}}>SHOP</span>
+            <span style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>SHOP</span>
           </div>
         </div>
       </div>
@@ -3355,17 +3355,17 @@ export default function App() {
               <div onClick={toggleSecret} style={{background:"rgba(0,0,0,0.7)",border:`1px solid ${s.secretsDone[today]?"#A855F7":"rgba(168,85,247,0.22)"}`,borderRadius:13,padding:"9px 12px",marginBottom:11,cursor:"pointer",backdropFilter:"blur(8px)"}}>
                 <div style={{display:"flex",alignItems:"center",gap:9}}>
                   <div style={{width:21,height:21,borderRadius:6,background:s.secretsDone[today]?"#A855F7":"rgba(168,85,247,0.08)",border:"1.5px solid #A855F7",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                    {s.secretsDone[today]?<span style={{color:"#fff",fontSize:10}}>✓</span>:<span style={{color:"#A855F7",fontSize:9}}>?</span>}
+                    {s.secretsDone[today]?<span style={{color:"#E8F4FF",fontSize:10}}>✓</span>:<span style={{color:"#A855F7",fontSize:9}}>?</span>}
                   </div>
                   <span style={{fontSize:16}}>{todaySecret.emoji}</span>
                   <div style={{flex:1}}>
                     <div style={{fontSize:7,color:"#A855F7",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:1}}>⬛ QUÊTE SECRÈTE</div>
                     <div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:s.secretsDone[today]?"#A855F7":"#D0D8F0"}}>{todaySecret.name}</div>
-                    <div style={{fontSize:8,color:"#333",fontFamily:"monospace"}}>{todaySecret.desc}</div>
+                    <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>{todaySecret.desc}</div>
                   </div>
                   <div style={{textAlign:"center",flexShrink:0}}>
                     <div style={{fontSize:10,color:"#A855F7",fontFamily:"'Orbitron',monospace",fontWeight:700}}>+{todaySecret.xp}</div>
-                    <div style={{fontSize:6,color:"#222",fontFamily:"monospace"}}>XP</div>
+                    <div style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace"}}>XP</div>
                   </div>
                 </div>
               </div>
@@ -3426,7 +3426,7 @@ export default function App() {
                     <span style={{fontSize:7,color:"#2A2A3A",fontFamily:"monospace"}}>PV DU BOSS</span>
                     <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossHp/todayBoss.maxHp>0.5?"#EF4444":bossHp/todayBoss.maxHp>0.25?"#F59E0B":"#FF3864"}}>{Math.max(0,bossHp)} / {todayBoss.maxHp}</span>
                   </div>
-                  <div style={{height:10,background:"rgba(255,255,255,0.05)",borderRadius:5,overflow:"hidden",boxShadow:"inset 0 2px 4px rgba(0,0,0,0.5)"}}>
+                  <div style={{height:10,background:"rgba(56,139,255,0.18)",borderRadius:5,overflow:"hidden",boxShadow:"inset 0 2px 4px rgba(0,0,0,0.5)"}}>
                     <div style={{height:"100%",width:`${(bossHp/todayBoss.maxHp)*100}%`,background:`linear-gradient(90deg,${bossHp/todayBoss.maxHp>0.5?"#EF4444":bossHp/todayBoss.maxHp>0.25?"#F59E0B":"#FF3864"},${todayBoss.color})`,borderRadius:5,transition:"width 0.6s cubic-bezier(.23,1.4,.42,1)",boxShadow:`0 0 8px ${todayBoss.color}`,animation:"hpDrain 0.3s ease"}}/>
                   </div>
                 </div>
@@ -3495,7 +3495,7 @@ export default function App() {
         {tab==="shop"&&(
           <div style={{padding:"14px 12px 80px"}}>
             <div style={{fontSize:7,color:"#FFD700",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em",marginBottom:3}}>MARCHÉ DU SYSTÈME</div>
-            <div style={{fontSize:10,color:"#222",fontFamily:"'Rajdhani',sans-serif",marginBottom:14}}>Dépense ton gold pour te renforcer.</div>
+            <div style={{fontSize:10,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",marginBottom:14}}>Dépense ton gold pour te renforcer.</div>
             {/* Active boosts */}
             {Object.entries(s.activeBoosts||{}).some(([,v])=>v>Date.now())&&(
               <div style={{background:"rgba(255,215,0,0.04)",border:"1px solid rgba(255,215,0,0.12)",borderRadius:12,padding:"10px 12px",marginBottom:12}}>
@@ -3507,7 +3507,7 @@ export default function App() {
                   const minLeft=Math.ceil((until-Date.now())/60000);
                   return <div key={id} style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
                     <span style={{fontSize:10,color:"#FFD700",fontFamily:"'Rajdhani',sans-serif"}}>{item.emoji} {item.name}</span>
-                    <span style={{fontSize:8,color:"#555",fontFamily:"monospace"}}>{minLeft}min</span>
+                    <span style={{fontSize:8,color:"#7BA7CC",fontFamily:"monospace"}}>{minLeft}min</span>
                   </div>;
                 })}
               </div>
@@ -3517,7 +3517,7 @@ export default function App() {
               <div style={{background:"rgba(168,85,247,0.05)",border:"1px solid rgba(168,85,247,0.2)",borderRadius:12,padding:"8px 12px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
                 <span style={{fontSize:16}}>🛡️</span>
                 <div><div style={{fontSize:10,color:"#A855F7",fontFamily:"'Orbitron',monospace",fontWeight:700}}>SCEAU ACTIF</div>
-                <div style={{fontSize:8,color:"#333",fontFamily:"monospace"}}>Ton streak est protégé pour 1 jour raté.</div></div>
+                <div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>Ton streak est protégé pour 1 jour raté.</div></div>
               </div>
             )}
             {SHOP_ITEMS.map(item=>{
@@ -3530,13 +3530,13 @@ export default function App() {
                   <div style={{width:38,height:38,borderRadius:10,background:`${item.color}12`,border:`1px solid ${item.color}33`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:19,flexShrink:0}}>{item.emoji}</div>
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{fontSize:12,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:owned?"#39FF14":boosted?"#FFD700":item.color}}>{item.name}</div>
-                    <div style={{fontSize:8,color:"#333",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
+                    <div style={{fontSize:8,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
                     {boosted&&<div style={{fontSize:7,color:"#39FF14",fontFamily:"monospace",marginTop:1}}>✦ ACTIF</div>}
                   </div>
                   <div style={{flexShrink:0,textAlign:"center",minWidth:46}}>
                     {owned?<span style={{fontSize:10,color:"#39FF14",fontFamily:"'Orbitron',monospace",fontWeight:700}}>✓</span>:(
-                      <><div style={{fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:canAfford?item.color:"#333"}}>{item.cost}</div>
-                      <div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>💰</div></>
+                      <><div style={{fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:canAfford?item.color:"#8BADD4"}}>{item.cost}</div>
+                      <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>💰</div></>
                     )}
                   </div>
                 </div>
@@ -3549,14 +3549,14 @@ export default function App() {
         {tab==="profile"&&(
           <div style={{padding:"14px 12px 80px"}}>
             <div style={{background:"rgba(0,0,0,0.7)",border:`1px solid ${effectiveColor}20`,borderRadius:16,padding:"14px",marginBottom:12,backdropFilter:"blur(8px)"}}>
-              <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:8}}>IDENTITÉ</div>
+              <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:8}}>IDENTITÉ</div>
               <div style={{fontSize:16,fontFamily:"'Orbitron',monospace",fontWeight:700,color:effectiveColor,marginBottom:2}}>{s.name||"CHASSEUR INCONNU"}</div>
               {s.activeTitle&&<div style={{fontSize:9,color:"#FFD70088",fontFamily:"monospace",fontStyle:"italic",marginBottom:4}}>✦ {s.activeTitle.name}</div>}
-              <div style={{fontSize:9,color:"#333",fontFamily:"monospace",display:"flex",alignItems:"center",gap:4}}>{rankData.title} · {totalXp.toLocaleString()} XP · <SLIcon.gold size={13}/>{s.gold}</div>
-              <button onClick={()=>setS(p=>({...p,name:""}))} style={{marginTop:10,padding:"6px 12px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:8,cursor:"pointer",fontSize:8,color:"#333",fontFamily:"'Orbitron',monospace"}}>MODIFIER LE NOM →</button>
+              <div style={{fontSize:9,color:"#8BADD4",fontFamily:"monospace",display:"flex",alignItems:"center",gap:4}}>{rankData.title} · {totalXp.toLocaleString()} XP · <SLIcon.gold size={13}/>{s.gold}</div>
+              <button onClick={()=>setS(p=>({...p,name:""}))} style={{marginTop:10,padding:"6px 12px",background:"rgba(10,20,50,0.5)",border:"1px solid rgba(56,139,255,0.22)",borderRadius:8,cursor:"pointer",fontSize:8,color:"#8BADD4",fontFamily:"'Orbitron',monospace"}}>MODIFIER LE NOM →</button>
               {!s.name&&(
                 <input autoFocus placeholder="Nouveau nom..." onKeyDown={e=>{if(e.key==="Enter"&&e.target.value.trim())setS(p=>({...p,name:e.target.value.trim()}));}}
-                  style={{width:"100%",marginTop:8,background:"rgba(255,255,255,0.03)",border:`1px solid ${effectiveColor}44`,borderRadius:9,padding:"9px 11px",color:"#E0E8FF",fontFamily:"'Orbitron',monospace",fontSize:13}}/>
+                  style={{width:"100%",marginTop:8,background:"rgba(10,20,50,0.5)",border:`1px solid ${effectiveColor}44`,borderRadius:9,padding:"9px 11px",color:"#D0EAFF",fontFamily:"'Orbitron',monospace",fontSize:13}}/>
               )}
             </div>
 
@@ -3573,14 +3573,14 @@ export default function App() {
                   </div>
                   <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:8}}>
                     <span style={{fontSize:28,fontFamily:"'Orbitron',monospace",fontWeight:900,color:m>1?"#EF4444":"#333"}}>×{m.toFixed(1)}</span>
-                    <span style={{fontSize:9,color:"#333",fontFamily:"'Rajdhani',sans-serif"}}>{streak} jour{streak!==1?"s":""} consécutifs</span>
+                    <span style={{fontSize:9,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif"}}>{streak} jour{streak!==1?"s":""} consécutifs</span>
                   </div>
-                  {nxt&&<div style={{fontSize:8,color:"#555",fontFamily:"monospace",marginBottom:8}}>Prochain palier ×{nxt.m.toFixed(1)} à {nxt.s} jours → encore {nxt.s-streak}j</div>}
+                  {nxt&&<div style={{fontSize:8,color:"#7BA7CC",fontFamily:"monospace",marginBottom:8}}>Prochain palier ×{nxt.m.toFixed(1)} à {nxt.s} jours → encore {nxt.s-streak}j</div>}
                   <div style={{display:"flex",gap:4}}>
                     {steps.map((st,i)=>(
-                      <div key={i} style={{flex:1,textAlign:"center",padding:"4px 2px",borderRadius:6,background:i<=curIdx?"rgba(239,68,68,0.15)":"rgba(255,255,255,0.02)",border:`1px solid ${i<=curIdx?"#EF444430":"rgba(255,255,255,0.04)"}`}}>
+                      <div key={i} style={{flex:1,textAlign:"center",padding:"4px 2px",borderRadius:6,background:i<=curIdx?"rgba(239,68,68,0.15)":"rgba(10,20,50,0.6)",border:`1px solid ${i<=curIdx?"#EF444430":"rgba(56,139,255,0.15)"}`}}>
                         <div style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:i<=curIdx?"#EF4444":"#222"}}>×{st.m.toFixed(1)}</div>
-                        <div style={{fontSize:6,color:"#222",fontFamily:"monospace"}}>{st.l}</div>
+                        <div style={{fontSize:6,color:"#8BADD4",fontFamily:"monospace"}}>{st.l}</div>
                       </div>
                     ))}
                   </div>
@@ -3606,15 +3606,15 @@ export default function App() {
                   {conds.map((c,i)=>(
                     <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<3?8:0}}>
                       <div style={{width:18,height:18,borderRadius:5,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",
-                        background:c.ok?"rgba(57,255,20,0.1)":"rgba(255,255,255,0.03)",
-                        border:`1px solid ${c.ok?"#39FF14":"rgba(255,255,255,0.07)"}`}}>
+                        background:c.ok?"rgba(57,255,20,0.1)":"rgba(10,20,50,0.5)",
+                        border:`1px solid ${c.ok?"#39FF14":"rgba(56,139,255,0.22)"}`}}>
                         {c.ok
                           ? <svg width={10} height={10} viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#39FF14" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          : <div style={{width:5,height:5,borderRadius:1,background:"rgba(255,255,255,0.07)"}}/>}
+                          : <div style={{width:5,height:5,borderRadius:1,background:"rgba(56,139,255,0.22)"}}/>}
                       </div>
                       <div style={{flex:1}}>
-                        <div style={{fontSize:10,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:c.ok?c.color:"#444"}}>{c.label}</div>
-                        <div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>{c.val}</div>
+                        <div style={{fontSize:10,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:c.ok?c.color:"#8BADD4"}}>{c.label}</div>
+                        <div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>{c.val}</div>
                       </div>
                     </div>
                   ))}
@@ -3623,7 +3623,7 @@ export default function App() {
             })()}
 
             <div style={{background:"rgba(0,0,0,0.65)",border:`1px solid ${effectiveColor}18`,borderRadius:14,padding:"14px",marginBottom:12,backdropFilter:"blur(6px)"}}>
-              <div style={{fontSize:7,color:"#222",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:10}}>CHEMIN DU CHASSEUR</div>
+              <div style={{fontSize:7,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:10}}>CHEMIN DU CHASSEUR</div>
               {RANKS.map((r,i)=>{
                 const active=rawRankData.rank===r.rank,passed=totalXp>=r.min;
                 const nxt=RANKS[i+1];
@@ -3631,13 +3631,13 @@ export default function App() {
                 const sLocked=isS&&!sConditions.all&&totalXp>=35000;
                 return (
                   <div key={r.rank} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<RANKS.length-1?7:0}}>
-                    <div style={{width:30,height:30,borderRadius:8,background:passed?r.color:"rgba(255,255,255,0.04)",border:`1.5px solid ${passed?r.color:sLocked?"rgba(168,85,247,0.2)":"rgba(255,255,255,0.06)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:active?`0 0 12px ${r.color}88`:passed?`0 0 5px ${r.color}44`:"none"}}>
+                    <div style={{width:30,height:30,borderRadius:8,background:passed?r.color:"rgba(56,139,255,0.15)",border:`1.5px solid ${passed?r.color:sLocked?"rgba(168,85,247,0.2)":"rgba(56,139,255,0.2)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:active?`0 0 12px ${r.color}88`:passed?`0 0 5px ${r.color}44`:"none"}}>
                       <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:900,color:passed?"#000":"#111"}}>{sLocked?"🔒":r.rank}</span>
                     </div>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:10,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:passed?r.color:sLocked?"rgba(168,85,247,0.3)":"#222"}}>{r.title}{sLocked?" — VERROUILLÉ":""}</div>
                       {active&&nxt&&<Bar v={totalXp-r.min} max={nxt.min-r.min} color={r.color} h={3}/>}
-                      {isS&&!passed&&<div style={{fontSize:7,color:"#333",fontFamily:"monospace"}}>75 000 XP + conditions spéciales</div>}
+                      {isS&&!passed&&<div style={{fontSize:7,color:"#8BADD4",fontFamily:"monospace"}}>75 000 XP + conditions spéciales</div>}
                     </div>
                     {active&&<span style={{fontSize:7,color:r.color,fontFamily:"'Orbitron',monospace",fontWeight:700}}>← ICI</span>}
                     {passed&&!active&&!sLocked&&<span style={{fontSize:10,color:"#39FF14"}}>✓</span>}
@@ -3645,9 +3645,9 @@ export default function App() {
                 );
               })}
             </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"rgba(0,0,0,0.6)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:12,padding:"11px 14px",marginBottom:8,backdropFilter:"blur(6px)"}}>
-              <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:"#333",letterSpacing:"0.08em"}}>🔊 SONS</span>
-              <div onClick={()=>setS(p=>({...p,soundEnabled:!p.soundEnabled}))} style={{width:42,height:22,borderRadius:11,background:s.soundEnabled?"#A855F7":"rgba(255,255,255,0.05)",border:`1px solid ${s.soundEnabled?"#A855F7":"rgba(255,255,255,0.1)"}`,cursor:"pointer",position:"relative",transition:"all 0.2s"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"rgba(0,0,0,0.6)",border:"1px solid rgba(56,139,255,0.25)",boxShadow:"0 0 12px rgba(56,139,255,0.08)",borderRadius:12,padding:"11px 14px",marginBottom:8,backdropFilter:"blur(6px)"}}>
+              <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:"#8BADD4",letterSpacing:"0.08em"}}>🔊 SONS</span>
+              <div onClick={()=>setS(p=>({...p,soundEnabled:!p.soundEnabled}))} style={{width:42,height:22,borderRadius:11,background:s.soundEnabled?"#A855F7":"rgba(56,139,255,0.18)",border:`1px solid ${s.soundEnabled?"#A855F7":"rgba(255,255,255,0.1)"}`,cursor:"pointer",position:"relative",transition:"all 0.2s"}}>
                 <div style={{position:"absolute",top:2,left:s.soundEnabled?20:2,width:17,height:17,borderRadius:"50%",background:"#fff",transition:"left 0.2s ease"}}/>
               </div>
             </div>
@@ -3664,9 +3664,9 @@ export default function App() {
             ) : (
               <div style={{marginTop:7,background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.4)",borderRadius:12,padding:"14px 12px"}}>
                 <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444",textAlign:"center",marginBottom:4}}>⚠️ CONFIRMER LE RESET ?</div>
-                <div style={{fontSize:9,color:"#888",fontFamily:"monospace",textAlign:"center",marginBottom:12}}>Toute ta progression sera effacée.</div>
+                <div style={{fontSize:9,color:"#A0C0E0",fontFamily:"monospace",textAlign:"center",marginBottom:12}}>Toute ta progression sera effacée.</div>
                 <div style={{display:"flex",gap:8}}>
-                  <button onClick={()=>setShowReset(false)} style={{flex:1,padding:"10px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:9,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:"#888"}}>
+                  <button onClick={()=>setShowReset(false)} style={{flex:1,padding:"10px",background:"rgba(56,139,255,0.18)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:9,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",color:"#A0C0E0"}}>
                     ANNULER
                   </button>
                   <button onClick={()=>{localStorage.removeItem("arise_v13");window.location.reload();}} style={{flex:1,padding:"10px",background:"rgba(239,68,68,0.2)",border:"1px solid #EF4444",borderRadius:9,cursor:"pointer",fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#EF4444"}}>

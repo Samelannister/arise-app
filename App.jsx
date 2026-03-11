@@ -882,6 +882,10 @@ const BOSS_IMGS = {
   compare: "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/492B8130-61E8-47BD-A30C-B930C8095F40.png",
   chaos:   "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/C4267998-3A78-4420-B740-0659129E5620.png",
   perfect: "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/8AEBD3F2-F434-4720-8B0B-C835239A292F.png",
+  fear:    "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/BE209237-6AD6-4E94-9F9D-CD615E3F92C3.png",
+  igris:   "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/146E414E-C936-49AA-949C-FAFBFB44703A.png",
+  shadow:  "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/0531A505-CF21-46AF-9B15-22658866FC02.png",
+  antares: "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/AF204753-3646-476A-945D-25A1F08E268E.png",
 };
 
 function BossSVG({ bossId, color, size=80, isShaking, isDead }) {

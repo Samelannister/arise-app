@@ -635,233 +635,29 @@ const SEC_ICON = { AUBE:"dawn", JOUR:"day", MIDI:"noon", SOIR:"evening" };
 // Rank index: E=0 D=1 C=2 B=3 A=4 S=5
 const RANK_IDX = { E:0, D:1, C:2, B:3, A:4, S:5 };
 
-function MangaHero({ color="#A855F7", rank="E", questsDoneToday=0, totalQuests=1 }) {
-  const c = color;
-  const ri = RANK_IDX[rank] || 0;
-  const progress = Math.min(1, questsDoneToday / Math.max(totalQuests, 1));
-
-  // Shadow soldiers count scales with rank: 0,0,2,4,7,12
-  const soldierCounts = [0,0,2,4,7,12];
-  const numSoldiers = soldierCounts[ri];
-
-  // Aura intensity scales with rank
-  const auraOpacity = 0.08 + ri * 0.07;         // 0.08 → 0.43
-  const auraBlur    = 18 + ri * 10;              // 18px → 68px
-  const auraSize    = 200 + ri * 50;             // 200 → 450
-  const ringCount   = Math.min(ri + 1, 5);
-
-  // Silhouette: at rank E it's just a faint outline; at S it's a crisp glowing form
-  const silhouetteOpacity = 0.12 + ri * 0.13;   // 0.12 → 0.77
-  const silhouetteBlur    = Math.max(0, 4 - ri); // 4 → 0 (sharper at high rank)
-  const glowStrength      = ri * 6;              // 0 → 30px glow
-
-  // Speed lines: appear from rank B+
-  const speedLines = ri >= 3;
-
-  // Halftone dots: appear from rank C+
-  const halftone = ri >= 2;
-
+function MangaHero({ color="#A855F7", rank="E" }) {
   return (
-    <div style={{position:"fixed",inset:0,zIndex:0,overflow:"hidden",pointerEvents:"none"}}>
-      {/* Base gradient */}
-      <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 90%,${c}${Math.round(auraOpacity*255).toString(16).padStart(2,"0")} 0%,#000 60%)`}}/>
-
-      {/* Perspective grid floor */}
-      <div style={{position:"absolute",bottom:0,left:"-200%",right:"-200%",height:"48%",
-        backgroundImage:`linear-gradient(${c}${ri>0?"18":"0A"} 1px,transparent 1px),linear-gradient(90deg,${c}${ri>0?"18":"0A"} 1px,transparent 1px)`,
-        backgroundSize:"52px 52px",transformOrigin:"bottom center",
-        animation:"gridMove 5s linear infinite",transform:"perspective(1000px) rotateX(72deg)"}}/>
-
-      {/* Speed lines (rank B+) */}
-      {speedLines && Array.from({length:14},(_,i)=>{
-        const angle = (i/14)*360;
-        const len = 120 + Math.random()*80;
-        const x = 50 + Math.cos(angle*Math.PI/180)*30;
-        const y = 62 + Math.sin(angle*Math.PI/180)*20;
-        return (
-          <div key={i} style={{
-            position:"absolute",left:`${x}%`,top:`${y}%`,
-            width:len,height:1,
-            background:`linear-gradient(90deg,transparent,${c}${ri>=4?"55":"33"})`,
-            transformOrigin:"left center",
-            transform:`rotate(${angle}deg)`,
-            opacity: 0.4+ri*0.08,
-            animation:`auraB ${1.5+i*0.2}s ease-in-out infinite`,
-            animationDelay:`${i*0.1}s`
-          }}/>
-        );
-      })}
-
-      {/* Halftone dot pattern overlay (rank C+) */}
-      {halftone && (
-        <div style={{
-          position:"absolute",bottom:"10%",left:"50%",transform:"translateX(-50%)",
-          width:260,height:360,
-          backgroundImage:`radial-gradient(circle,${c}${ri>=4?"44":"22"} 1.5px,transparent 1.5px)`,
-          backgroundSize:"14px 14px",
-          maskImage:"radial-gradient(ellipse 55% 80% at 50% 60%,black 30%,transparent 80%)",
-          WebkitMaskImage:"radial-gradient(ellipse 55% 80% at 50% 60%,black 30%,transparent 80%)",
-          opacity: 0.5+ri*0.1,
-        }}/>
-      )}
-
-      {/* Main aura glow behind silhouette */}
-      <div style={{
-        position:"absolute",bottom:"12%",left:"50%",transform:"translateX(-50%)",
-        width:auraSize*0.7,height:auraSize*0.45,borderRadius:"50%",
-        background:`radial-gradient(ellipse,${c} 0%,transparent 70%)`,
-        filter:`blur(${auraBlur}px)`,
-        opacity:auraOpacity*1.8,
-        animation:"auraB 3.5s ease-in-out infinite"
-      }}/>
-
-      {/* Pulsing rings supprimés */}
-
-      {/* SHADOW SOLDIERS (rank C+) — small silhouettes flanking the hero */}
-      {numSoldiers > 0 && Array.from({length:numSoldiers},(_,i)=>{
-        const side = i % 2 === 0 ? -1 : 1;
-        const row  = Math.floor(i/2);
-        const xOff = (60 + row * 35) * side;
-        const yOff = row * 18;
-        const scale = 0.35 - row * 0.04;
-        return (
-          <div key={i} style={{
-            position:"absolute",bottom: `${8 + yOff}%`,
-            left:`calc(50% + ${xOff}px)`,
-            transform:"translateX(-50%)",
-            width:90*scale*3,height:200*scale*3,
-            opacity: 0.18 + ri*0.06,
-            filter:`blur(${Math.max(0,2-ri*0.3)}px)`,
-            animation:`heroFloat ${3+i*0.3}s ease-in-out infinite`,
-            animationDelay:`${i*0.2}s`
-          }}>
-            <svg viewBox="0 0 60 140" style={{width:"100%",height:"100%"}}>
-              {/* Simple soldier silhouette */}
-              <ellipse cx="30" cy="22" rx="10" ry="12" fill={c} opacity="0.9"/>
-              {/* Spiky hair */}
-              <path d="M20 18 L17 8 L22 15 M24 14 L22 4 L28 13 M30 13 L30 3 L34 12 M36 14 L38 4 L40 15 M40 18 L43 8 L43 18" stroke={c} strokeWidth="1.5" fill="none"/>
-              {/* Body */}
-              <path d="M20 34 L15 80 L20 130 L25 130 L28 85 L32 85 L35 130 L40 130 L45 80 L40 34Z" fill={c} opacity="0.85"/>
-              {/* Shoulders */}
-              <path d="M20 34 L8 45 L12 70 L18 65 L20 42Z" fill={c} opacity="0.8"/>
-              <path d="M40 34 L52 45 L48 70 L42 65 L40 42Z" fill={c} opacity="0.8"/>
-              {/* Sword glow */}
-              {ri >= 4 && <line x1="10" y1="45" x2="3" y2="95" stroke={c} strokeWidth="2" opacity="0.9" style={{filter:`drop-shadow(0 0 4px ${c})`}}/>}
-            </svg>
-          </div>
-        );
-      })}
-
-      {/* MAIN HERO SILHOUETTE */}
-      <div style={{
-        position:"absolute",bottom:20,left:"50%",transform:"translateX(-50%)",
-        width:190,height:420,
-        animation:"heroFloat 4.5s ease-in-out infinite",
-      }}>
-        <svg viewBox="0 0 100 220" style={{
-          width:"100%",height:"100%",overflow:"visible",
-          filter:`blur(${silhouetteBlur}px) drop-shadow(0 0 ${glowStrength}px ${c})`,
-          opacity:silhouetteOpacity,
-          transition:"filter 1.5s ease, opacity 1.5s ease"
-        }}>
-          <defs>
-            <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={c} stopOpacity="1"/>
-              <stop offset="85%" stopColor={c} stopOpacity={ri>=3?0.8:0.3}/>
-              <stop offset="100%" stopColor={c} stopOpacity="0"/>
-            </linearGradient>
-            {ri >= 2 && (
-              <filter id="silGlow">
-                <feGaussianBlur in="SourceGraphic" stdDeviation={ri} result="b"/>
-                <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            )}
-          </defs>
-
-          {/* Spiky hair — more spikes at higher rank */}
-          {[[-16,0],[-10,-6],[-4,-9],[0,-11],[4,-9],[10,-6],[16,0]].slice(0, 3+ri).map(([dx,dy],i)=>(
-            <path key={i} d={`M${50+dx} 28 L${50+dx*0.4+dy*0.3} ${12+dy} L${50+dx*0.7} 24`} fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-          ))}
-
-          {/* Head */}
-          <ellipse cx="50" cy="32" rx="14" ry="16" fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-
-          {/* Neck + torso */}
-          <path d="M44 47 L38 50 L35 95 L38 155 L62 155 L65 95 L62 50 L56 47Z" fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-
-          {/* Coat flaps — long coat at B+ */}
-          {ri >= 3 && <>
-            <path d="M38 95 Q25 130 22 180 L32 183 Q36 145 40 110Z" fill="url(#sg)" opacity="0.7"/>
-            <path d="M62 95 Q75 130 78 180 L68 183 Q64 145 60 110Z" fill="url(#sg)" opacity="0.7"/>
-          </>}
-
-          {/* Left arm */}
-          <path d="M38 52 L28 58 L24 95 L30 97 L32 65 L40 58Z" fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-
-          {/* Right arm raised with sword */}
-          <path d="M62 52 L72 56 L76 88 L70 90 L68 62 L60 58Z" fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-
-          {/* Sword — visible from rank D+, glowing at A+ */}
-          {ri >= 1 && (
-            <g filter={ri>=4?"url(#silGlow)":undefined}>
-              <path d="M76 88 L62 195 L66 196 L80 90Z" fill={ri>=4?c:"url(#sg)"} opacity={ri>=4?1:0.8}
-                style={ri>=4?{filter:`drop-shadow(0 0 8px ${c})`}:{}}/>
-              <path d="M68 88 L74 88 L72 96 L70 96Z" fill={c} opacity="0.9"/>
-            </g>
-          )}
-
-          {/* Legs */}
-          <path d="M42 155 L38 215 L44 216 L48 170 L52 170 L56 216 L62 215 L58 155Z" fill="url(#sg)" filter={ri>=2?"url(#silGlow)":undefined}/>
-
-          {/* Shadow orb (rank S only) */}
-          {ri >= 5 && (
-            <circle cx="26" cy="92" r="10" fill={c} opacity="0.9"
-              style={{filter:`drop-shadow(0 0 12px ${c}) drop-shadow(0 0 25px ${c})`,animation:"pulseG 2s ease-in-out infinite"}}/>
-          )}
-
-          {/* Aura outline at high rank */}
-          {ri >= 4 && (
-            <path d="M44 47 L38 50 L35 95 L38 155 L62 155 L65 95 L62 50 L56 47Z M50 16 Q34 28 36 48 Q46 44 54 44 Q66 28 50 16Z"
-              fill="none" stroke={c} strokeWidth="0.8" opacity="0.5" style={{animation:"auraB 2s ease-in-out infinite"}}/>
-          )}
-        </svg>
-
-        {/* Quest progress aura: flames/sparks rising as you complete quests */}
-        {progress > 0 && Array.from({length:Math.ceil(progress*8)},(_,i)=>(
-          <div key={i} style={{
-            position:"absolute",
-            bottom: `${5+Math.random()*20}%`,
-            left: `${30+Math.random()*40}%`,
-            width:2+Math.random()*2,
-            height:8+Math.random()*16,
-            background:`linear-gradient(0deg,${c},transparent)`,
-            borderRadius:4,
-            opacity:0.4+Math.random()*0.4,
-            animation:`fireFlick ${0.6+Math.random()*0.8}s ease-in-out infinite`,
-            animationDelay:`${Math.random()*1.5}s`,
-            filter:`blur(${Math.random()*1.5}px)`
-          }}/>
-        ))}
-      </div>
-
-      {/* Shadow pool under feet */}
-      <div style={{
-        position:"absolute",bottom:"4%",left:"50%",transform:"translateX(-50%)",
-        width:100+ri*30,height:8+ri*3,borderRadius:"50%",
-        background:c,opacity:0.06+ri*0.04,
-        filter:`blur(${8+ri*2}px)`,
-        animation:"auraB 4s ease-in-out infinite"
-      }}/>
-
-      {/* Top & bottom vignette */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:"28%",background:"linear-gradient(180deg,#000 0%,transparent 100%)"}}/>
-      <div style={{position:"absolute",bottom:0,left:0,right:0,height:"15%",background:"linear-gradient(0deg,#000 0%,transparent 100%)"}}/>
+    <div style={{
+      position:"fixed", inset:0, zIndex:0, pointerEvents:"none",
+      display:"flex", alignItems:"flex-end", justifyContent:"center",
+      overflow:"hidden",
+    }}>
+      <img
+        src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/hunter.png"
+        alt="hunter"
+        style={{
+          width:"auto", height:"85%", maxWidth:"100%",
+          objectFit:"contain", objectPosition:"bottom center",
+          opacity:0.35,
+          filter:`drop-shadow(0 0 30px ${color}88) drop-shadow(0 0 60px ${color}44)`,
+          maskImage:"linear-gradient(to top, black 60%, transparent 100%)",
+          WebkitMaskImage:"linear-gradient(to top, black 60%, transparent 100%)",
+        }}
+      />
     </div>
   );
 }
 
-// ── BOSS SVG ──────────────────────────────────────────────
-// ── BOSS IMAGE MAP ────────────────────────────────────────
 const BOSS_IMGS = {
   sloth:   "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/3346886B-A7BD-484A-A7E1-F33F198B7F23.png",
   procras: "https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/A46A22F7-4201-4ADE-B7C5-CC22C2A53B19.png",
@@ -3392,11 +3188,13 @@ export default function App() {
         {tab==="dungeon"&&(
           <div style={{padding:"0 0 80px",display:"flex",flexDirection:"column"}}>
             {/* Cinematic boss arena */}
-            <div style={{position:"relative",minHeight:180,background:`radial-gradient(ellipse at 50% 60%,${todayBoss.color}12 0%,rgba(0,0,0,0.95) 70%)`,borderBottom:`1px solid ${todayBoss.color}18`,overflow:"hidden",flexShrink:0}}>
-              {/* Ambient rings behind boss */}
-              {!bossWon&&[1,2].map(i=>(
-                <div key={i} style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:80+i*60,height:80+i*60,borderRadius:"50%",border:`1px solid ${todayBoss.color}${i===1?"22":"10"}`,pointerEvents:"none",animation:`pulseRing ${2+i}s ${i*0.7}s ease-out infinite`}}/>
-              ))}
+            <div style={{position:"relative",minHeight:180,overflow:"hidden",flexShrink:0,background:"#000"}}>
+              {/* Portal background */}
+              {!bossWon&&(
+                <img src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/portal.png" alt="portal"
+                  style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.5,filter:`hue-rotate(0deg) drop-shadow(0 0 20px ${todayBoss.color})`}}
+                />
+              )}
               {/* Boss SVG — large and centered */}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",paddingTop:18,paddingBottom:14,position:"relative",zIndex:2}}>
                 <div style={{fontSize:8,color:`${todayBoss.color}66`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:6}}>

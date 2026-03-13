@@ -183,11 +183,42 @@ const getDailyBoss = (date, rankChar) => {
 // ── CSS ───────────────────────────────────────────────────
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap');
+
+:root {
+  --r: 18px;
+  --r-sm: 10px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --nav-h: calc(64px + var(--safe-bottom));
+}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;}
-html,body,#root{background:#000;height:100%;overflow:hidden;}
-::-webkit-scrollbar{width:2px;} ::-webkit-scrollbar-thumb{background:#A855F730;}
+html,body,#root{background:#020B18;height:100%;overflow:hidden;}
+::-webkit-scrollbar{width:2px;} ::-webkit-scrollbar-thumb{background:#38607830;}
 input,select,textarea{outline:none;-webkit-appearance:none;user-select:text;}
-input[type=time]{color-scheme:dark;} input[type=range]{-webkit-appearance:slider-horizontal;height:4px;accent-color:#A855F7;}
+input[type=time]{color-scheme:dark;} input[type=range]{-webkit-appearance:slider-horizontal;height:4px;accent-color:#3B82F6;}
+
+/* Smooth scroll */
+.scroll-area{-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+
+/* Glass card */
+.glass{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r);}
+
+/* Quest card tap feedback */
+.quest-card{transition:transform 0.12s ease,opacity 0.12s ease;}
+.quest-card:active{transform:scale(0.985);opacity:0.85;}
+
+/* Nav item tap */
+.nav-item{transition:transform 0.15s cubic-bezier(.34,1.56,.64,1);}
+.nav-item:active{transform:scale(0.88);}
+
+/* Button press */
+.btn-press{transition:transform 0.1s ease,box-shadow 0.1s ease;}
+.btn-press:active{transform:scale(0.96);}
 
 @keyframes heroFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 @keyframes auraB{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:0.9;transform:scale(1.08);}}
@@ -1035,37 +1066,282 @@ function VictoryScreen({boss,gold,xp,onClose}) {
 
 // ── ONBOARDING ────────────────────────────────────────────
 function Onboarding({ onComplete }) {
-  const [step, setStep] = useState(0);
+  const [phase, setPhase] = useState(0);
+  // phases: 0=noir, 1=connexion, 2=sélection, 3=glitch, 4=nom, 5=rang, 6=mission
   const [name, setName] = useState("");
   const [input, setInput] = useState("");
-  const STEPS = [
-    { title:"LE SYSTÈME T'A DÉTECTÉ", body:"Une anomalie dimensionnelle a été localisée.\n\nTu as été sélectionné parmi des millions.\n\nIl est temps de t'éveiller.", btn:"Je suis prêt", icon:"🚪" },
-    { title:"IDENTIFICATION REQUISE", body:"Le Système doit enregistrer ton identité.", btn:null, icon:"📋", isName:true },
-    { title:`BIENVENUE, ${name||"CHASSEUR"}`, body:`Tu débutes au Rang E.\n\nChaque quête complétée forge ta discipline.\nChaque boss vaincu te rapproche de ta meilleure version.\n\nLe Système t'observe.`, btn:"ARISE", icon:"⚔️" },
-  ];
-  const s = STEPS[step];
+  const [text, setText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const [glitch, setGlitch] = useState(false);
+  const [rankVisible, setRankVisible] = useState(false);
+  const [canSkip, setCanSkip] = useState(false);
+  const fullText = phase === 1 ? "Connexion au Système détectée..." :
+                   phase === 2 ? "Un joueur a été sélectionné." :
+                   phase === 3 ? "IDENTIFICATION REQUISE" : "";
+
+  // Cursor blink
+  useEffect(() => {
+    const t = setInterval(() => setShowCursor(p => !p), 500);
+    return () => clearInterval(t);
+  }, []);
+
+  // Auto-advance phases
+  useEffect(() => {
+    if (phase === 0) {
+      setTimeout(() => setPhase(1), 800);
+      setTimeout(() => setCanSkip(true), 2000);
+    }
+  }, [phase]);
+
+  // Typewriter effect
+  useEffect(() => {
+    if (!fullText) { setText(""); return; }
+    setText("");
+    let i = 0;
+    const t = setInterval(() => {
+      setText(fullText.slice(0, i + 1));
+      i++;
+      if (i >= fullText.length) {
+        clearInterval(t);
+        if (phase === 1) setTimeout(() => setPhase(2), 900);
+        if (phase === 2) setTimeout(() => { setGlitch(true); setTimeout(() => { setGlitch(false); setPhase(3); }, 600); }, 900);
+        if (phase === 3) setTimeout(() => setPhase(4), 800);
+      }
+    }, 45);
+    return () => clearInterval(t);
+  }, [phase]);
+
+  // Rank reveal animation
+  useEffect(() => {
+    if (phase === 5) setTimeout(() => setRankVisible(true), 400);
+  }, [phase]);
+
+  const handleName = () => {
+    if (!input.trim()) return;
+    setName(input.trim());
+    setPhase(5);
+  };
+
+  const skip = () => {
+    if (phase < 4) setPhase(4);
+  };
+
+  const c = "#6B7280"; // Rang E color
+
   return (
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"#020B18",display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <MangaHero color="#A855F7" rank="E" questsDoneToday={0} totalQuests={1}/>
-      <div style={{position:"relative",zIndex:10,maxWidth:310,width:"90%",textAlign:"center",animation:"onboardIn 0.6s ease"}}>
-        <div style={{height:1,background:"linear-gradient(90deg,transparent,#A855F7,transparent)",marginBottom:26}}/>
-        <div style={{fontSize:51,marginBottom:14,filter:"drop-shadow(0 0 20px #A855F7)"}}>{s.icon}</div>
-        <div style={{fontSize:8,color:"#3A3A5A",fontFamily:"'Orbitron',monospace",letterSpacing:"0.4em",marginBottom:10}}>[ SYSTÈME ]</div>
-        <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",marginBottom:14,lineHeight:1.4}}>{s.title}</div>
-        <div style={{fontSize:12,color:"#8BADD4",fontFamily:"'Rajdhani',sans-serif",lineHeight:1.85,whiteSpace:"pre-line",marginBottom:22}}>{s.body}</div>
-        {s.isName&&(
-          <div style={{marginBottom:18}}>
-            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&input.trim()){setName(input.trim());setStep(2);}}} placeholder="Ton nom de chasseur..." autoFocus
-              style={{width:"100%",background:"rgba(168,85,247,0.06)",border:"1px solid rgba(168,85,247,0.4)",borderRadius:12,padding:"12px 16px",color:"#D0EAFF",fontFamily:"'Orbitron',monospace",fontSize:14,fontWeight:700,textAlign:"center",marginBottom:10}}/>
-            <button onClick={()=>{if(input.trim()){setName(input.trim());setStep(2);}}} style={{width:"100%",padding:"12px",background:"rgba(168,85,247,0.14)",border:"1px solid #A855F7",borderRadius:12,cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",letterSpacing:"0.1em"}}>CONFIRMER ›</button>
+    <div style={{
+      position:"fixed", inset:0, zIndex:9999,
+      background:"#000",
+      display:"flex", flexDirection:"column",
+      alignItems:"center", justifyContent:"center",
+      fontFamily:"'Orbitron',monospace",
+      overflow:"hidden",
+    }}>
+      <style>{`
+        @keyframes glitchA{0%{clip-path:inset(40% 0 61% 0)}20%{clip-path:inset(92% 0 1% 0)}40%{clip-path:inset(43% 0 1% 0)}60%{clip-path:inset(25% 0 58% 0)}80%{clip-path:inset(54% 0 7% 0)}100%{clip-path:inset(58% 0 43% 0)}}
+        @keyframes glitchB{0%{clip-path:inset(24% 0 29% 0)}20%{clip-path:inset(54% 0 21% 0)}40%{clip-path:inset(7% 0 71% 0)}60%{clip-path:inset(89% 0 1% 0)}80%{clip-path:inset(37% 0 24% 0)}100%{clip-path:inset(11% 0 45% 0)}}
+        @keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes rankPop{0%{transform:scale(0.2) rotate(-15deg);opacity:0}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+        @keyframes borderGlow{0%,100%{box-shadow:0 0 8px #6B7280}50%{box-shadow:0 0 24px #6B728088,0 0 40px #6B728044}}
+        @keyframes systemPulse{0%,100%{opacity:0.4}50%{opacity:1}}
+      `}</style>
+
+      {/* Scanline overlay */}
+      <div style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:1,
+        backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,100,0.015) 2px,rgba(0,255,100,0.015) 4px)"}}/>
+      {/* Moving scanline */}
+      <div style={{position:"absolute",left:0,right:0,height:3,background:"rgba(0,255,100,0.04)",
+        animation:"scanline 4s linear infinite",pointerEvents:"none",zIndex:2}}/>
+
+      {/* Skip button */}
+      {canSkip && phase < 4 && (
+        <button onClick={skip} style={{position:"absolute",top:50,right:20,zIndex:10,
+          background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,
+          padding:"6px 14px",color:"rgba(255,255,255,0.3)",fontSize:9,cursor:"pointer",
+          fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em"}}>
+          PASSER ›
+        </button>
+      )}
+
+      {/* ── PHASE 0: Noir ── */}
+
+      {/* ── PHASE 1-3: Texte cinématique ── */}
+      {(phase >= 1 && phase <= 3) && (
+        <div style={{position:"relative",zIndex:5,textAlign:"center",padding:"0 40px",animation:"fadeInUp 0.5s ease"}}>
+          {/* System tag */}
+          <div style={{fontSize:8,color:"rgba(0,255,100,0.5)",letterSpacing:"0.4em",marginBottom:20,
+            animation:"systemPulse 2s ease infinite"}}>
+            [ SYSTÈME · ARISE ]
           </div>
-        )}
-        {s.btn&&<button onClick={()=>{if(step===2)onComplete(name);else setStep(p=>p+1);}} style={{width:"100%",padding:"14px",background:step===2?"linear-gradient(135deg,#A855F7,#7C3AED)":"rgba(168,85,247,0.12)",border:"1px solid #A855F7",borderRadius:12,cursor:"pointer",fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:900,color:step===2?"#fff":"#A855F7",letterSpacing:"0.12em"}}>{s.btn}</button>}
-        <div style={{height:1,background:"linear-gradient(90deg,transparent,#A855F7,transparent)",marginTop:26}}/>
-        <div style={{display:"flex",justifyContent:"center",gap:6,marginTop:12}}>
-          {[0,1,2].map(i=><div key={i} style={{width:i===step?16:4,height:4,borderRadius:2,background:i===step?"#A855F7":"#1A1A2A",transition:"all 0.3s"}}/>)}
+
+          {/* Main text with typewriter */}
+          <div style={{position:"relative",minHeight:60}}>
+            <div style={{
+              fontSize: phase===3 ? 16 : 13,
+              color: phase===3 ? "#A855F7" : "rgba(200,230,255,0.9)",
+              letterSpacing:"0.08em",
+              lineHeight:1.6,
+              fontWeight: phase===3 ? 900 : 400,
+              textShadow: phase===3 ? "0 0 20px #A855F7" : "none",
+            }}>
+              {text}{showCursor && <span style={{opacity:0.8}}>|</span>}
+            </div>
+
+            {/* Glitch effect */}
+            {glitch && <>
+              <div style={{position:"absolute",inset:0,color:"#00F5FF",fontSize:13,letterSpacing:"0.08em",
+                animation:"glitchA 0.3s ease infinite",transform:"translateX(-3px)",opacity:0.7}}>{text}</div>
+              <div style={{position:"absolute",inset:0,color:"#FF3864",fontSize:13,letterSpacing:"0.08em",
+                animation:"glitchB 0.3s ease infinite",transform:"translateX(3px)",opacity:0.7}}>{text}</div>
+            </>}
+          </div>
+
+          {/* Decorative line */}
+          <div style={{height:1,background:"linear-gradient(90deg,transparent,rgba(168,85,247,0.4),transparent)",marginTop:24}}/>
         </div>
-      </div>
+      )}
+
+      {/* ── PHASE 4: Saisie du nom ── */}
+      {phase === 4 && (
+        <div style={{position:"relative",zIndex:5,width:"85%",maxWidth:320,animation:"fadeInUp 0.5s ease"}}>
+          <div style={{textAlign:"center",marginBottom:28}}>
+            <div style={{fontSize:8,color:"rgba(0,255,100,0.5)",letterSpacing:"0.4em",marginBottom:12,animation:"systemPulse 2s ease infinite"}}>
+              [ SYSTÈME · ARISE ]
+            </div>
+            <div style={{fontSize:13,color:"#A855F7",fontWeight:700,letterSpacing:"0.1em",marginBottom:6}}>
+              IDENTIFICATION REQUISE
+            </div>
+            <div style={{fontSize:10,color:"rgba(139,173,212,0.7)",letterSpacing:"0.06em"}}>
+              Comment t'appelles-tu, Chasseur ?
+            </div>
+          </div>
+
+          {/* Name input */}
+          <div style={{position:"relative",marginBottom:14}}>
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => { if(e.key==="Enter") handleName(); }}
+              placeholder="Ton nom de chasseur..."
+              autoFocus
+              style={{
+                width:"100%",
+                background:"rgba(168,85,247,0.06)",
+                border:"1px solid rgba(168,85,247,0.35)",
+                borderRadius:12, padding:"14px 16px",
+                color:"#D0EAFF",
+                fontFamily:"'Orbitron',monospace",
+                fontSize:14, fontWeight:700,
+                textAlign:"center",
+                animation:"borderGlow 2s ease infinite",
+              }}
+            />
+          </div>
+          <button onClick={handleName}
+            style={{width:"100%",padding:"14px",
+              background:"linear-gradient(135deg,rgba(168,85,247,0.2),rgba(124,58,237,0.15))",
+              border:"1px solid #A855F7",borderRadius:12,
+              cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",
+              fontWeight:900,color:"#A855F7",letterSpacing:"0.14em",
+              boxShadow:"0 0 20px rgba(168,85,247,0.3)"}}>
+            CONFIRMER ›
+          </button>
+        </div>
+      )}
+
+      {/* ── PHASE 5: Révélation du rang ── */}
+      {phase === 5 && (
+        <div style={{position:"relative",zIndex:5,textAlign:"center",padding:"0 30px",width:"100%",animation:"fadeInUp 0.4s ease"}}>
+          <div style={{fontSize:8,color:"rgba(0,255,100,0.5)",letterSpacing:"0.4em",marginBottom:20,animation:"systemPulse 2s ease infinite"}}>
+            [ SYSTÈME · ARISE ]
+          </div>
+
+          {/* Hunter name */}
+          <div style={{fontSize:11,color:"rgba(139,173,212,0.6)",letterSpacing:"0.15em",marginBottom:6}}>
+            CHASSEUR ENREGISTRÉ
+          </div>
+          <div style={{fontSize:24,fontWeight:900,color:"#D0EAFF",letterSpacing:"0.08em",marginBottom:24,
+            textShadow:"0 0 20px rgba(255,255,255,0.3)"}}>
+            {name.toUpperCase()}
+          </div>
+
+          {/* Rang E badge — big reveal */}
+          {rankVisible && (
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:12,marginBottom:28}}>
+              <div style={{
+                width:100,height:100,borderRadius:24,
+                background:"linear-gradient(135deg,rgba(107,114,128,0.3),rgba(107,114,128,0.1))",
+                border:"3px solid #6B7280",
+                display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+                animation:"rankPop 0.6s cubic-bezier(.34,1.56,.64,1) forwards",
+                boxShadow:"0 0 40px rgba(107,114,128,0.4),0 0 80px rgba(107,114,128,0.2)",
+              }}>
+                <div style={{fontSize:8,color:"rgba(107,114,128,0.8)",letterSpacing:"0.2em",marginBottom:2}}>RANG</div>
+                <div style={{fontSize:42,fontWeight:900,color:"#6B7280",lineHeight:1,textShadow:"0 0 16px #6B7280"}}>E</div>
+              </div>
+              <div style={{fontSize:10,color:"rgba(107,114,128,0.8)",letterSpacing:"0.2em"}}>CHASSEUR NOVICE</div>
+            </div>
+          )}
+
+          <div style={{fontSize:10,color:"rgba(139,173,212,0.6)",lineHeight:1.8,letterSpacing:"0.04em",marginBottom:28}}>
+            Tu viens de traverser ta première porte.<br/>
+            Le Système t'observe.
+          </div>
+
+          <button onClick={() => setPhase(6)}
+            style={{padding:"14px 40px",
+              background:"linear-gradient(135deg,rgba(107,114,128,0.2),rgba(107,114,128,0.1))",
+              border:"1px solid #6B7280",borderRadius:12,
+              cursor:"pointer",fontSize:12,fontFamily:"'Orbitron',monospace",
+              fontWeight:900,color:"#6B7280",letterSpacing:"0.14em"}}>
+            CONTINUER ›
+          </button>
+        </div>
+      )}
+
+      {/* ── PHASE 6: Première mission ── */}
+      {phase === 6 && (
+        <div style={{position:"relative",zIndex:5,textAlign:"center",padding:"0 30px",width:"100%",animation:"fadeInUp 0.4s ease"}}>
+          <div style={{fontSize:8,color:"rgba(0,255,100,0.5)",letterSpacing:"0.4em",marginBottom:20,animation:"systemPulse 2s ease infinite"}}>
+            [ SYSTÈME · ARISE ]
+          </div>
+
+          <div style={{fontSize:13,fontWeight:900,color:"#A855F7",letterSpacing:"0.1em",marginBottom:20,
+            textShadow:"0 0 16px #A855F7"}}>
+            TA MISSION
+          </div>
+
+          {/* Mission cards */}
+          {[
+            {icon:"⚔️", text:"Complète tes quêtes quotidiennes pour gagner de l'XP"},
+            {icon:"🚪", text:"Entre dans le donjon pour combattre le boss du jour"},
+            {icon:"📈", text:"Monte de rang E jusqu'à S — deviens le Monarque"},
+          ].map((m,i) => (
+            <div key={i} style={{
+              display:"flex",alignItems:"center",gap:14,
+              background:"rgba(168,85,247,0.05)",
+              border:"1px solid rgba(168,85,247,0.15)",
+              borderRadius:12,padding:"12px 16px",
+              marginBottom:8,textAlign:"left",
+              animation:`fadeInUp ${0.3+i*0.15}s ease`,
+            }}>
+              <span style={{fontSize:22,flexShrink:0}}>{m.icon}</span>
+              <span style={{fontSize:11,color:"rgba(192,224,255,0.8)",lineHeight:1.5,letterSpacing:"0.02em"}}>{m.text}</span>
+            </div>
+          ))}
+
+          <button onClick={() => onComplete(name)}
+            style={{width:"100%",marginTop:20,padding:"16px",
+              background:"linear-gradient(135deg,#A855F7,#7C3AED)",
+              border:"none",borderRadius:14,
+              cursor:"pointer",fontSize:14,fontFamily:"'Orbitron',monospace",
+              fontWeight:900,color:"#fff",letterSpacing:"0.14em",
+              boxShadow:"0 0 30px rgba(168,85,247,0.5),0 4px 20px rgba(0,0,0,0.4)"}}>
+            ARISE ›
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1581,6 +1857,57 @@ const ATK_FX = {
   S:{type:"shadow", tag:"🌑 OMBRE",  col:"#A855F7"},
 };
 
+// ── COMPÉTENCES PAR RANG ──────────────────────────────────
+// 3 skills max, débloquées progressivement
+const SKILLS_BY_RANK = {
+  E: [
+    { id:"basic",    name:"Frappe du Chasseur",   desc:"Coup de base, fiable.",         dmgMult:1.0,  col:"#6B7280", fx:"none",   icon:"⚔️",  cooldown:0 },
+    { id:"focus",    name:"Concentration",         desc:"Prépare un coup critique.",     dmgMult:0,    col:"#60A5FA", fx:"crit_next", icon:"🧠", cooldown:3 },
+    { id:"endure",   name:"Endurance",             desc:"Récupère 15 PV.",              dmgMult:0.3,  col:"#39FF14", fx:"heal",   icon:"🛡️",  cooldown:4 },
+  ],
+  D: [
+    { id:"basic",    name:"Frappe du Chasseur",   desc:"Coup de base, fiable.",         dmgMult:1.0,  col:"#6B7280", fx:"none",   icon:"⚔️",  cooldown:0 },
+    { id:"slash",    name:"Lame Confirmée",        desc:"Frappe puissante + saignement.",dmgMult:1.4,  col:"#60A5FA", fx:"bleed",  icon:"🗡️",  cooldown:2 },
+    { id:"focus",    name:"Concentration",         desc:"Prépare un coup critique.",     dmgMult:0,    col:"#A0C0E0", fx:"crit_next", icon:"🧠", cooldown:3 },
+  ],
+  C: [
+    { id:"slash",    name:"Lame Aguerrie",         desc:"Frappe + stun 1 tour.",        dmgMult:1.3,  col:"#34D399", fx:"stun",   icon:"⚡",  cooldown:2 },
+    { id:"double",   name:"Double Frappe",         desc:"Deux coups rapides.",           dmgMult:1.8,  col:"#34D399", fx:"none",   icon:"⚔️⚔️", cooldown:3 },
+    { id:"endure",   name:"Bouclier du Chasseur",  desc:"Récupère 20 PV + résiste.",    dmgMult:0.2,  col:"#39FF14", fx:"heal",   icon:"🛡️",  cooldown:4 },
+  ],
+  B: [
+    { id:"elite",    name:"Frappe d'Élite",        desc:"Dégâts massifs.",              dmgMult:2.0,  col:"#F59E0B", fx:"none",   icon:"💥",  cooldown:0 },
+    { id:"combo",    name:"Combo Dévastateur",     desc:"3 coups + brûlure.",           dmgMult:2.5,  col:"#F59E0B", fx:"burn",   icon:"🔥",  cooldown:3 },
+    { id:"shield",   name:"Armure d'Acier",        desc:"Bouclier + contre-attaque.",   dmgMult:0.5,  col:"#60A5FA", fx:"shield", icon:"🛡️",  cooldown:4 },
+  ],
+  A: [
+    { id:"legend",   name:"Frappe Légendaire",     desc:"Dégâts critiques garantis.",   dmgMult:2.5,  col:"#EF4444", fx:"crit",   icon:"⚔️",  cooldown:0 },
+    { id:"inferno",  name:"Inferno",               desc:"Brûlure totale, -5 PV/tour.",  dmgMult:2.0,  col:"#FF3864", fx:"burn",   icon:"🔥",  cooldown:2 },
+    { id:"void",     name:"Frappe du Vide",        desc:"Ignore 30% défense du boss.",  dmgMult:3.0,  col:"#EF4444", fx:"pierce", icon:"🌀",  cooldown:4 },
+  ],
+  S: [
+    { id:"monarch",  name:"Domination du Monarque",desc:"Pouvoir absolu.",              dmgMult:4.0,  col:"#A855F7", fx:"shadow", icon:"👑",  cooldown:0 },
+    { id:"army",     name:"Armée des Ombres",      desc:"Invoque 3 soldats.",           dmgMult:3.0,  col:"#A855F7", fx:"shadow", icon:"🌑",  cooldown:2 },
+    { id:"arise",    name:"ARISE",                 desc:"Ressuscite un allié tombé.",   dmgMult:5.0,  col:"#C084FC", fx:"shadow", icon:"💜",  cooldown:5 },
+  ],
+};
+
+// Messages de narration par boss
+const BOSS_NARRATION = {
+  sloth:   ["L'apathie te ronge...", "Tu veux t'allonger...", "Pourquoi s'efforcer ?"],
+  procras: ["Plus tard, toujours plus tard.", "Le temps perdu ne revient pas.", "Demain... peut-être demain."],
+  screen:  ["Tes yeux brûlent.", "Encore 5 minutes...", "La lumière bleue t'aveugle."],
+  doubt:   ["Tu n'es pas assez bon.", "Le doute s'infiltre...", "Qui es-tu pour réussir ?"],
+  sleep:   ["Tes paupières sont lourdes...", "Tu es piégé dans le rêve.", "Dors... encore un peu."],
+  compare: ["Les autres sont meilleurs.", "Tu n'es rien.", "Regarde comme ils réussissent."],
+  chaos:   ["CHAOS TOTAL !", "Tout s'effondre.", "L'ordre est une illusion."],
+  perfect: ["Pas assez parfait !", "L'excellence exige le sang.", "Encore des erreurs..."],
+  fear:    ["La peur te paralyse.", "Tes pires cauchemars...", "Tu ne peux pas gagner."],
+  igris:   ["Igris : Viens te battre !", "Igris : Tu es encore trop faible.", "Igris : Prouve ta valeur."],
+  shadow:  ["L'armée des ombres avance.", "Beru : Je vais te dévorer.", "Tu rejoindras mes rangs."],
+  antares: ["ANTARES : Je suis le Monarque !", "ANTARES : Tu ne peux pas gagner.", "ANTARES : Agenouille-toi."],
+};
+
 // IA du boss — chaque boss a 2-3 patterns d'attaque distincts
 const BOSS_AI = {
   sloth:   [{dmg:8, msg:"L'apathie te ronge...",        fx:"slow"},  {dmg:6, msg:"Tu veux t'allonger...",         fx:"skip"}],
@@ -1602,182 +1929,9 @@ function pickBossAtk(bossId) {
 }
 
 function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
-  attacks, turnPhase, statusFx, lastBossAtk, lastPlayerAtk,
-  bossWon, onChoose}) {
-
-  const bPct = bossHp/bossMaxHp;
-  const pPct = Math.max(0,playerHp)/playerMaxHp;
-  const bCol = bPct>0.5?"#EF4444":bPct>0.25?"#F59E0B":"#FF3864";
-  const pCol = pPct>0.5?"#39FF14":pPct>0.25?"#F59E0B":"#EF4444";
-  const isMyTurn = turnPhase==="player";
-  const [bossShake,setBossShake]=useState(false);
-  const [playerShake,setPlayerShake]=useState(false);
-
-  // Ambiance couleur par boss
-  const glow={sloth:"#6B728020",procras:"#60A5FA18",screen:"#8B5CF625",doubt:"#37415128",
-    sleep:"#1E40AF22",compare:"#7C3AED25",chaos:"#DC262628",perfect:"#F59E0B22",
-    fear:"#7F1D1D30",igris:"#99181820",shadow:"#854D0E20",antares:"#A855F730"};
-
-  useEffect(()=>{
-    if(lastPlayerAtk){setBossShake(true);setTimeout(()=>setBossShake(false),400);}
-  },[lastPlayerAtk]);
-  useEffect(()=>{
-    if(lastBossAtk&&lastBossAtk.dmg>0){setPlayerShake(true);setTimeout(()=>setPlayerShake(false),400);}
-  },[lastBossAtk]);
-
-  return (
-    <div>
-      {/* ── BOSS CARD ── */}
-      <div style={{background:`linear-gradient(150deg,${glow[boss.id]||"#A855F715"},rgba(0,0,0,0.75))`,
-        border:`1.5px solid ${bossWon?"#39FF14":boss.color}30`,borderRadius:16,padding:"14px 12px",
-        marginBottom:8,position:"relative",overflow:"hidden",
-        animation:bossShake?"bossHit 0.35s ease":"none"}}>
-        <style>{`@keyframes bossHit{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}50%{transform:translateX(5px)}70%{transform:translateX(-3px)}}
-        @keyframes playerHit{0%,100%{transform:translateX(0)}25%{transform:translateX(4px)}60%{transform:translateX(-4px)}}
-        @keyframes fadeUp{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
-        @keyframes turnPulse{0%,100%{opacity:1}50%{opacity:0.5}}`}</style>
-
-        {/* Radial glow */}
-        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 30%,${boss.color}12 0%,transparent 65%)`,pointerEvents:"none"}}/>
-
-        {/* Boss attack flash overlay */}
-        {playerShake&&lastBossAtk&&(
-          <div style={{position:"absolute",inset:0,background:`${boss.color}18`,borderRadius:16,pointerEvents:"none",zIndex:10}}/>
-        )}
-
-        <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:10}}>
-          <div style={{position:"relative"}}>
-            <BossSVG bossId={boss.id} color={bossWon?"#39FF14":boss.color} size={160} isShaking={bossShake} isDead={bossWon}/>
-          </div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:8,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.18em"}}>{boss.title}</div>
-            <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossWon?"#39FF14":boss.color}}>{boss.name}</div>
-            {!bossWon&&<div style={{fontSize:8,color:"#1A1A2A",fontFamily:"monospace",fontStyle:"italic",marginTop:2,lineHeight:1.4}}>"{boss.lore}"</div>}
-          </div>
-        </div>
-        <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-          <span style={{fontSize:8,color:"#111",fontFamily:"monospace"}}>PV BOSS</span>
-          <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossWon?"#39FF14":bCol}}>{bossWon?"✦ VAINCU":Math.max(0,bossHp)+" / "+bossMaxHp}</span>
-        </div>
-        <Bar v={bossWon?0:bossHp} max={bossMaxHp} color={bossWon?"#39FF14":bCol} h={8}/>
-      </div>
-
-      {/* ── PLAYER STATUS ── */}
-      {!bossWon&&(
-        <div style={{background:"rgba(0,0,0,0.6)",border:`1px solid ${pCol}18`,borderRadius:12,
-          padding:"10px 12px",marginBottom:8,animation:playerShake?"playerHit 0.35s ease":"none"}}>
-          <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:6}}>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>TES PV</span>
-                <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:pCol}}>{Math.max(0,playerHp)} / {playerMaxHp}</span>
-              </div>
-              <Bar v={Math.max(0,playerHp)} max={playerMaxHp} color={pCol} h={6}/>
-            </div>
-            {(statusFx||[]).length>0&&(
-              <div style={{display:"flex",gap:4,flexShrink:0}}>
-                {statusFx.map((ef,i)=>(
-                  <div key={i} style={{padding:"2px 6px",borderRadius:6,background:`${ef.col}20`,border:`1px solid ${ef.col}40`,fontSize:7,color:ef.col,fontFamily:"monospace"}}>
-                    {ef.tag} {ef.turns}t
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          {/* Turn banner */}
-          <div style={{textAlign:"center",padding:"5px 0",borderTop:"1px solid rgba(56,139,255,0.15)"}}>
-            <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,letterSpacing:"0.08em",
-              color:isMyTurn?"#39FF14":"#EF4444",
-              textShadow:isMyTurn?"0 0 10px #39FF14":"0 0 10px #EF4444",
-              animation:isMyTurn?"none":"turnPulse 1s ease infinite"}}>
-              {isMyTurn?"⚔️  TON TOUR — CHOISIS UNE ATTAQUE":"⏳  LE BOSS SE PRÉPARE..."}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* ── COMBAT LOG (last round) ── */}
-      {(lastPlayerAtk||lastBossAtk)&&!bossWon&&(
-        <div style={{display:"flex",gap:6,marginBottom:8,animation:"fadeUp 0.3s ease"}}>
-          {lastPlayerAtk&&(
-            <div style={{flex:1,background:"rgba(57,255,20,0.04)",border:"1px solid rgba(57,255,20,0.12)",borderRadius:9,padding:"6px 9px"}}>
-              <div style={{fontSize:8,color:"#39FF14",fontFamily:"'Orbitron',monospace",marginBottom:1}}>TOI</div>
-              <div style={{fontSize:9,color:"#C0C8E8",fontFamily:"monospace"}}>
-                {lastPlayerAtk.name} <span style={{color:"#EF4444",fontWeight:700}}>-{lastPlayerAtk.dmg}</span>
-                {lastPlayerAtk.crit&&<span style={{color:"#FFD700"}}> 💥CRIT</span>}
-                {lastPlayerAtk.fxTag&&<span style={{color:lastPlayerAtk.fxCol}}> {lastPlayerAtk.fxTag}</span>}
-              </div>
-            </div>
-          )}
-          {lastBossAtk&&(
-            <div style={{flex:1,background:`${boss.color}08`,border:`1px solid ${boss.color}18`,borderRadius:9,padding:"6px 9px"}}>
-              <div style={{fontSize:8,color:boss.color,fontFamily:"'Orbitron',monospace",marginBottom:1}}>BOSS</div>
-              <div style={{fontSize:9,color:"#C0C8E8",fontFamily:"monospace"}}>
-                {lastBossAtk.msg.slice(0,28)}{lastBossAtk.msg.length>28?"…":""} <span style={{color:"#EF4444",fontWeight:700}}>{lastBossAtk.skipped?"STUN!":"-"+lastBossAtk.dmg}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── ATTACK GRID ── */}
-      {!bossWon&&(
-        <div>
-          <div style={{fontSize:8,color:"#1A1A2A",fontFamily:"'Orbitron',monospace",letterSpacing:"0.12em",marginBottom:7}}>
-            ⚔️ ATTAQUES{attacks.length===0?" — complète des quêtes pour débloquer":` (${attacks.length})`}
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {attacks.map(a=>{
-              const fx=ATK_FX[a.rank]||ATK_FX.E;
-              const disabled=!isMyTurn;
-              return (
-                <button key={a.id} onClick={()=>!disabled&&onChoose(a)} disabled={disabled}
-                  style={{display:"flex",flexDirection:"column",gap:4,textAlign:"left",
-                    background:disabled?"rgba(0,0,0,0.3)":`${a.color}0D`,
-                    border:`1px solid ${disabled?"rgba(56,139,255,0.15)":a.color+"35"}`,
-                    borderRadius:12,padding:"10px",cursor:disabled?"default":"pointer",
-                    opacity:disabled?0.45:1,transition:"all 0.15s",
-                    boxShadow:!disabled?`0 0 8px ${a.color}14`:"none"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{fontSize:19}}>{a.emoji}</span>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:disabled?"#222":a.color,
-                        whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{a.atkName}</div>
-                      <div style={{fontSize:8,color:"#2A2A3A",fontFamily:"monospace"}}>{a.name}</div>
-                    </div>
-                  </div>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                    <span style={{fontSize:13,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#EF4444"}}>-{a.dmg}</span>
-                    {fx.type!=="none"&&(
-                      <span style={{fontSize:7,padding:"2px 5px",borderRadius:4,
-                        background:`${fx.col}18`,border:`1px solid ${fx.col}35`,
-                        color:fx.col,fontFamily:"monospace"}}>{fx.tag}</span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-          {attacks.length>0&&isMyTurn&&(
-            <button onClick={()=>onChoose(attacks[Math.floor(Math.random()*attacks.length)])}
-              style={{width:"100%",marginTop:8,padding:"11px",background:"rgba(168,85,247,0.1)",
-                border:"1px solid #A855F744",borderRadius:12,cursor:"pointer",fontSize:11,
-                fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F7",letterSpacing:"0.08em"}}>
-              ⚔️ FRAPPE AU HASARD
-            </button>
-          )}
-        </div>
-      )}
-      {bossWon&&(
-        <div style={{textAlign:"center",padding:"16px",background:"rgba(57,255,20,0.04)",
-          border:"1px solid rgba(57,255,20,0.15)",borderRadius:14}}>
-          <div style={{fontSize:12,fontFamily:"'Orbitron',monospace",color:"#39FF14",fontWeight:700}}>✦ DONJON TERMINÉ</div>
-          <div style={{fontSize:9,color:"#8BADD4",fontFamily:"monospace",marginTop:3}}>Reviens demain pour un nouveau boss</div>
-        </div>
-      )}
-    </div>
-  );
-}
+  rank, questsDoneToday, totalQuests,
+  turnPhase, statusFx, lastBossAtk, lastPlayerAtk,
+  bossWon, onChoose, cooldowns, setCooldowns}) {
 
 // ══════════════════════════════════════════════════════════
 // POMODORO v2 — Configurable, pausable, alarme, autocomplete
@@ -2353,11 +2507,29 @@ function StatsTab({history,quests,totalXp,streak,gold,defeatedBosses}) {
         </div>
         <div style={{display:"flex",gap:4}}>{last7.map((d,i)=><div key={d.k} style={{flex:1,textAlign:"center",fontSize:7,color:i===6?"#A855F7":"#111",fontFamily:"monospace"}}>{d.day}</div>)}</div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,marginBottom:12}}>
-        {[{l:"XP TOTAL",v:totalXp.toLocaleString(),c:"#FFD700"},{l:"STREAK",v:`${streak}🔥`,c:"#EF4444"},{l:"JOURS ACTIFS",v:totalDays,c:"#39FF14"},{l:"GOLD",v:`💰 ${gold}`,c:"#F59E0B"},{l:"BOSS VAINCUS",v:defeatedBosses.length,c:"#A855F7"},{l:"QUÊTES",v:quests.length,c:"#60A5FA"}].map(k=>(
-          <div key={k.l} style={{background:"rgba(0,0,0,0.65)",border:`1px solid ${k.c}18`,borderRadius:11,padding:"9px 11px",backdropFilter:"blur(6px)"}}>
-            <div style={{fontSize:7,color:"#111",fontFamily:"'Orbitron',monospace",letterSpacing:"0.08em",marginBottom:2}}>{k.l}</div>
-            <div style={{fontSize:18,fontFamily:"'Orbitron',monospace",fontWeight:700,color:k.c}}>{k.v}</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+        {[
+          {l:"XP TOTAL",v:totalXp.toLocaleString(),c:"#FFD700",icon:"◆"},
+          {l:"STREAK",v:streak,c:"#EF4444",icon:"🔥"},
+          {l:"JOURS ACTIFS",v:totalDays,c:"#39FF14",icon:"📅"},
+          {l:"GOLD",v:gold,c:"#F59E0B",icon:"💰"},
+          {l:"BOSS VAINCUS",v:defeatedBosses.length,c:"#A855F7",icon:"⚔"},
+          {l:"QUÊTES",v:quests.length,c:"#60A5FA",icon:"📋"}
+        ].map(k=>(
+          <div key={k.l} style={{
+            background:`linear-gradient(135deg,${k.c}0C 0%,rgba(0,0,0,0.7) 100%)`,
+            border:`1px solid ${k.c}22`,
+            borderRadius:16,padding:"12px 14px",
+            backdropFilter:"blur(8px)",
+            position:"relative",overflow:"hidden",
+          }}>
+            {/* Subtle corner glow */}
+            <div style={{position:"absolute",top:-10,right:-10,width:40,height:40,borderRadius:"50%",background:k.c,opacity:0.07,filter:"blur(12px)"}}/>
+            <div style={{fontSize:7,color:`${k.c}88`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",marginBottom:6}}>{k.l}</div>
+            <div style={{display:"flex",alignItems:"baseline",gap:5}}>
+              <div style={{fontSize:22,fontFamily:"'Orbitron',monospace",fontWeight:900,color:k.c,textShadow:`0 0 16px ${k.c}66`}}>{k.v}</div>
+              <div style={{fontSize:14,opacity:0.7}}>{k.icon}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -2899,21 +3071,51 @@ export default function App() {
   // ── TURN-BASED COMBAT ────────────────────────────────────
   const doAttack=useCallback(atk=>{
     if(bossWon||bossHp<=0||turnPhase!=="player") return;
-    // 1) Player hits boss
-    const crit=Math.random()<0.15;
-    const variance=0.85+Math.random()*0.3;
-    const dynBase=questDamage(atk,streak);
-    const dmg=Math.round((crit?dynBase*1.8:dynBase)*variance);
-    const fx=ATK_FX[atk.rank]||ATK_FX.E;
-    const fxApplied=fx.type!=="none"&&Math.random()<0.4;
+
+    // Heal skill
+    if(atk.heal>0) {
+      setPlayerHp(cur=>Math.min(PLAYER_MAX_HP,(cur??PLAYER_MAX_HP)+atk.heal));
+      toast({icon:"💚",title:"+"+atk.heal+" PV récupérés",desc:"",color:"#39FF14"});
+    }
+
+    // Crit next — no damage this turn
+    if(atk.fx==="crit_next") {
+      snd.tap();
+      setTurnPhase("boss_anim");
+      setTimeout(()=>{
+        const bAtk=pickBossAtk(todayBoss.id);
+        const stunned=statusFx.some(e=>e.type==="stun");
+        const shielded=statusFx.some(e=>e.type==="shield");
+        let bDmg=stunned?0:Math.round(bAtk.dmg*(0.75+Math.random()*0.5));
+        if(shielded) bDmg=Math.round(bDmg*0.5);
+        setLastBossAtk({...bAtk,dmg:bDmg,skipped:stunned});
+        if(bDmg>0){snd.hit();setPlayerHp(cur=>Math.max(0,(cur??PLAYER_MAX_HP)-bDmg));}
+        setStatusFx(prev=>prev.map(e=>({...e,turns:e.turns-1})).filter(e=>e.turns>0));
+        setTurnPhase("player");
+        // Decrement cooldowns
+        setCooldowns(cd=>{const n={};Object.keys(cd).forEach(k=>{if(cd[k]>1)n[k]=cd[k]-1;});return n;});
+      },1400);
+      setLastPlayerAtk({name:atk.name,dmg:0,crit:false,fxTag:"PROCHAIN CRIT",fxCol:"#FFD700"});
+      return;
+    }
+
+    // Normal attack
+    const dmg = atk.dmg||0;
+    const crit = atk.crit||false;
     crit?snd.crit():snd.slash();
     setTimeout(()=>snd.hit(),80);
     setLastHit(true); setIsCrit(crit);
     setTimeout(()=>{setLastHit(false);setIsCrit(false);},600);
-    setLastPlayerAtk({name:atk.atkName||atk.name, dmg, crit, fxTag:fxApplied?fx.tag:"", fxCol:fx.col});
+    setLastPlayerAtk({name:atk.name, dmg, crit, fxTag:atk.fxTag||"", fxCol:atk.fxCol||""});
     setFlashXp({xp:dmg,color:crit?"#FFD700":"#EF4444"});
     setTimeout(()=>setFlashXp(null),900);
-    if(fxApplied) setStatusFx(prev=>[...prev.filter(e=>e.type!==fx.type),{...fx,turns:2}]);
+
+    // Apply status fx
+    if(atk.fx==="stun") setStatusFx(prev=>[...prev.filter(e=>e.type!=="stun"),{type:"stun",tag:"⚡ STUN",col:"#F59E0B",turns:1}]);
+    if(atk.fx==="burn") setStatusFx(prev=>[...prev.filter(e=>e.type!=="burn"),{type:"burn",tag:"🔥 BRÛL.",col:"#FF3864",turns:2}]);
+    if(atk.fx==="shield") setStatusFx(prev=>[...prev.filter(e=>e.type!=="shield"),{type:"shield",tag:"🛡 BOUCLIER",col:"#60A5FA",turns:2}]);
+    if(atk.fx==="shadow") setStatusFx(prev=>[...prev.filter(e=>e.type!=="shadow"),{type:"shadow",tag:"🌑 OMBRE",col:"#A855F7",turns:3}]);
+
     setTurnPhase("boss_anim");
 
     setS(p=>{
@@ -2928,13 +3130,15 @@ export default function App() {
       return{...p,bossHpMap:{...p.bossHpMap,[today]:newHp}};
     });
 
-    // 2) Boss counter-attacks after animation delay
+    // Boss counter-attack
     setTimeout(()=>{
       if(bossHp-dmg>0&&!bossWon){
         const bAtk=pickBossAtk(todayBoss.id);
         const stunned=statusFx.some(e=>e.type==="stun");
         const shielded=statusFx.some(e=>e.type==="shield");
-        let bDmg=stunned?0:Math.round(bAtk.dmg*(0.75+Math.random()*0.5));
+        // Phase 2: boss does +30% dmg below 50% HP
+        const phase2 = bossHp/todayBoss.maxHp <= 0.5;
+        let bDmg=stunned?0:Math.round(bAtk.dmg*(0.75+Math.random()*0.5)*(phase2?1.3:1));
         if(shielded) bDmg=Math.round(bDmg*0.5);
         setLastBossAtk({...bAtk,dmg:bDmg,skipped:stunned});
         if(bDmg>0){
@@ -2942,7 +3146,6 @@ export default function App() {
           setPlayerHp(cur=>{
             const next=Math.max(0,(cur??PLAYER_MAX_HP)-bDmg);
             if(next<=0){
-              // Player defeated — boss heals a bit, player respawns
               setTimeout(()=>toast({icon:"💀",title:"Tu es tombé au combat !",desc:"Le boss récupère 15% de PV. Tu te relèves.",color:"#EF4444"}),100);
               setS(p=>{
                 const regen=Math.round(todayBoss.maxHp*0.15);
@@ -2956,6 +3159,8 @@ export default function App() {
         setStatusFx(prev=>prev.map(e=>({...e,turns:e.turns-1})).filter(e=>e.turns>0));
       }
       setTurnPhase("player");
+      // Decrement cooldowns each turn
+      setCooldowns(cd=>{const n={};Object.keys(cd).forEach(k=>{if(cd[k]>1)n[k]=cd[k]-1;});return n;});
     },1600);
   },[today,todayBoss,bossHp,bossWon,turnPhase,streak,statusFx,PLAYER_MAX_HP]);
 
@@ -3188,13 +3393,15 @@ export default function App() {
         {tab==="dungeon"&&(
           <div style={{padding:"0 0 80px",display:"flex",flexDirection:"column"}}>
             {/* Cinematic boss arena */}
-            <div style={{position:"relative",minHeight:180,overflow:"hidden",flexShrink:0,background:"#000"}}>
+            <div style={{position:"relative",minHeight:320,overflow:"hidden",flexShrink:0,background:"#000"}}>
               {/* Portal background */}
               {!bossWon&&(
                 <img src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/portal.png" alt="portal"
-                  style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.5,filter:`hue-rotate(0deg) drop-shadow(0 0 20px ${todayBoss.color})`}}
+                  style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.7,filter:`drop-shadow(0 0 30px ${todayBoss.color})`}}
                 />
               )}
+              {/* Dark overlay so UI stays readable */}
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.6) 100%)",zIndex:1}}/>
               {/* Boss SVG — large and centered */}
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",paddingTop:18,paddingBottom:14,position:"relative",zIndex:2}}>
                 <div style={{fontSize:8,color:`${todayBoss.color}66`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:6}}>
@@ -3249,13 +3456,17 @@ export default function App() {
                 bossMaxHp={todayBoss.maxHp}
                 playerHp={playerHp??PLAYER_MAX_HP}
                 playerMaxHp={PLAYER_MAX_HP}
-                attacks={attacks.map(a=>({...a,atkName:s.generatedAtkNames?.[a.id]||a.atkName}))}
+                rank={rankData.rank}
+                questsDoneToday={done.length}
+                totalQuests={s.quests.length}
                 turnPhase={turnPhase}
                 statusFx={statusFx}
                 lastBossAtk={lastBossAtk}
                 lastPlayerAtk={lastPlayerAtk}
                 bossWon={bossWon}
                 onChoose={doAttack}
+                cooldowns={cooldowns}
+                setCooldowns={setCooldowns}
               />
             </div>
           </div>
@@ -3409,25 +3620,37 @@ export default function App() {
               );
             })()}
 
-            <div style={{background:"rgba(0,0,0,0.65)",border:`1px solid ${effectiveColor}18`,borderRadius:14,padding:"14px",marginBottom:12,backdropFilter:"blur(6px)"}}>
-              <div style={{fontSize:8,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:10}}>CHEMIN DU CHASSEUR</div>
+            <div style={{background:"rgba(0,0,0,0.65)",border:`1px solid ${effectiveColor}18`,borderRadius:20,padding:"16px",marginBottom:12,backdropFilter:"blur(6px)"}}>
+              <div style={{fontSize:8,color:"#8BADD4",fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em",marginBottom:14}}>CHEMIN DU CHASSEUR</div>
               {RANKS.map((r,i)=>{
                 const active=rawRankData.rank===r.rank,passed=totalXp>=r.min;
                 const nxt=RANKS[i+1];
                 const isS=r.rank==="S";
                 const sLocked=isS&&!sConditions.all&&totalXp>=35000;
                 return (
-                  <div key={r.rank} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<RANKS.length-1?7:0}}>
-                    <div style={{width:30,height:30,borderRadius:8,background:passed?r.color:"rgba(56,139,255,0.15)",border:`1.5px solid ${passed?r.color:sLocked?"rgba(168,85,247,0.2)":"rgba(56,139,255,0.2)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:active?`0 0 12px ${r.color}88`:passed?`0 0 5px ${r.color}44`:"none"}}>
-                      <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:900,color:passed?"#000":"#111"}}>{sLocked?"🔒":r.rank}</span>
+                  <div key={r.rank} style={{display:"flex",alignItems:"center",gap:12,marginBottom:i<RANKS.length-1?10:0,position:"relative"}}>
+                    {/* Vertical connector line */}
+                    {i<RANKS.length-1&&<div style={{position:"absolute",left:19,top:34,width:2,height:16,background:passed&&totalXp>=(RANKS[i+1]?.min||0)?`linear-gradient(${r.color},${RANKS[i+1].color})`:"rgba(56,139,255,0.1)",borderRadius:1}}/>}
+                    {/* Rank orb */}
+                    <div style={{
+                      width:38,height:38,borderRadius:12,flexShrink:0,
+                      background:active?`linear-gradient(135deg,${r.color},${r.color}88)`:passed?`${r.color}22`:"rgba(10,20,50,0.8)",
+                      border:`2px solid ${active?r.color:passed?r.color+"55":sLocked?"rgba(168,85,247,0.2)":"rgba(56,139,255,0.15)"}`,
+                      display:"flex",alignItems:"center",justifyContent:"center",
+                      boxShadow:active?`0 0 20px ${r.color}88,0 0 40px ${r.color}44`:passed?`0 0 8px ${r.color}33`:"none",
+                      transition:"all 0.3s",
+                    }}>
+                      <span style={{fontSize:12,fontFamily:"'Orbitron',monospace",fontWeight:900,color:active?"#000":passed?r.color:"#111"}}>{sLocked?"🔒":r.rank}</span>
                     </div>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:11,fontFamily:"'Rajdhani',sans-serif",fontWeight:600,color:passed?r.color:sLocked?"rgba(168,85,247,0.3)":"#222"}}>{r.title}{sLocked?" — VERROUILLÉ":""}</div>
-                      {active&&nxt&&<Bar v={totalXp-r.min} max={nxt.min-r.min} color={r.color} h={3}/>}
-                      {isS&&!passed&&<div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace"}}>75 000 XP + conditions spéciales</div>}
+                      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:active&&nxt?4:0}}>
+                        <div style={{fontSize:12,fontFamily:"'Rajdhani',sans-serif",fontWeight:700,color:active?r.color:passed?r.color+"BB":sLocked?"rgba(168,85,247,0.3)":"#222"}}>{r.title}</div>
+                        {active&&<span style={{fontSize:7,color:r.color,fontFamily:"'Orbitron',monospace",fontWeight:700,background:`${r.color}15`,border:`1px solid ${r.color}30`,borderRadius:4,padding:"1px 5px"}}>ACTUEL</span>}
+                        {passed&&!active&&<span style={{fontSize:10,color:"#39FF14"}}>✓</span>}
+                      </div>
+                      {active&&nxt&&<Bar v={totalXp-r.min} max={nxt.min-r.min} color={r.color} h={4}/>}
+                      {isS&&!passed&&<div style={{fontSize:8,color:"#8BADD4",fontFamily:"monospace",marginTop:2}}>75 000 XP + conditions spéciales</div>}
                     </div>
-                    {active&&<span style={{fontSize:8,color:r.color,fontFamily:"'Orbitron',monospace",fontWeight:700}}>← ICI</span>}
-                    {passed&&!active&&!sLocked&&<span style={{fontSize:11,color:"#39FF14"}}>✓</span>}
                   </div>
                 );
               })}
@@ -3485,19 +3708,48 @@ export default function App() {
       />
 
       {/* BOTTOM NAV */}
-      <div style={{position:"relative",zIndex:10,flexShrink:0,background:"rgba(0,0,0,0.95)",borderTop:`1px solid ${effectiveColor}12`,backdropFilter:"blur(24px)",paddingBottom:"env(safe-area-inset-bottom,0px)",paddingTop:4,paddingLeft:6,paddingRight:6}}>
-        <div style={{display:"flex",gap:3,alignItems:"center"}}>
+      <div style={{
+        position:"relative",zIndex:10,flexShrink:0,
+        background:"rgba(2,11,24,0.96)",
+        borderTop:`1px solid rgba(56,139,255,0.12)`,
+        backdropFilter:"blur(32px)",
+        WebkitBackdropFilter:"blur(32px)",
+        paddingBottom:"env(safe-area-inset-bottom,12px)",
+        paddingTop:6,paddingLeft:4,paddingRight:4
+      }}>
+        <div style={{display:"flex",alignItems:"center"}}>
           {TABS.map(t=>{
             const active=tab===t.id;
             const IconComp=SLIcon[t.id];
             return (
               <button key={t.id} onClick={()=>{setTab(t.id);snd.tap();}}
-                style={{flex:1,padding:active?"7px 4px 9px":"9px 4px 11px",background:active?`${effectiveColor}14`:"none",border:active?`1px solid ${effectiveColor}30`:"1px solid transparent",borderRadius:12,cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:active?3:2,transition:"all 0.2s ease",boxShadow:active?`0 0 12px ${effectiveColor}22`:"none"}}>
+                className="nav-item"
+                style={{
+                  flex:1,minHeight:52,
+                  background:"none",border:"none",
+                  cursor:"pointer",
+                  display:"flex",flexDirection:"column",
+                  alignItems:"center",justifyContent:"center",gap:4,
+                  position:"relative",
+                }}>
+                {/* Active indicator pill */}
+                {active&&<div style={{
+                  position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",
+                  width:28,height:3,borderRadius:2,
+                  background:effectiveColor,
+                  boxShadow:`0 0 10px ${effectiveColor}`,
+                }}/>}
                 {IconComp
-                  ? <IconComp size={active?22:18} color={active?effectiveColor:"#2A2A3A"} style={{transition:"all 0.2s",filter:active?`drop-shadow(0 0 5px ${effectiveColor})`:"none",animation:active?"navPop 0.25s ease":"none"}}/>
-                  : <span style={{fontSize:active?20:16}}>{t.icon}</span>
+                  ? <IconComp size={22} color={active?effectiveColor:"#334D66"} style={{transition:"all 0.2s",filter:active?`drop-shadow(0 0 6px ${effectiveColor}88)`:"none"}}/>
+                  : <span style={{fontSize:21,opacity:active?1:0.3}}>{t.icon}</span>
                 }
-                <span style={{fontSize:8,fontFamily:"'Orbitron',monospace",letterSpacing:"0.04em",color:active?effectiveColor:"transparent",fontWeight:700,transition:"color 0.2s"}}>{t.label}</span>
+                <span style={{
+                  fontSize:8,fontFamily:"'Orbitron',monospace",
+                  letterSpacing:"0.05em",
+                  color:active?effectiveColor:"#334D66",
+                  fontWeight:700,
+                  transition:"color 0.2s"
+                }}>{t.label}</span>
               </button>
             );
           })}
@@ -3505,4 +3757,6 @@ export default function App() {
       </div>
     </div>
   );
+}
+
 }

@@ -1933,6 +1933,164 @@ function CombatV2({boss, bossHp, bossMaxHp, playerHp, playerMaxHp,
   turnPhase, statusFx, lastBossAtk, lastPlayerAtk,
   bossWon, onChoose, cooldowns, setCooldowns}) {
 
+  const bPct = bossHp/bossMaxHp;
+  const pPct = Math.max(0,playerHp)/playerMaxHp;
+  const bCol = bPct>0.5?"#EF4444":bPct>0.25?"#F59E0B":"#FF3864";
+  const pCol = pPct>0.5?"#39FF14":pPct>0.25?"#F59E0B":"#EF4444";
+  const isMyTurn = turnPhase==="player";
+  const [bossShake,setBossShake]=useState(false);
+  const [playerShake,setPlayerShake]=useState(false);
+  const [narration,setNarration]=useState("");
+  const [showNarration,setShowNarration]=useState(false);
+  const [critNext,setCritNext]=useState(false);
+
+  const questBonus = 1 + (questsDoneToday/Math.max(totalQuests,1));
+  const baseDmg = RANK_DMG[rank]||10;
+  const skills = SKILLS_BY_RANK[rank]||SKILLS_BY_RANK.E;
+  const bossNarrations = BOSS_NARRATION[boss.id]||["Le boss attaque !"];
+
+  useEffect(()=>{
+    if(lastPlayerAtk){setBossShake(true);setTimeout(()=>setBossShake(false),400);}
+  },[lastPlayerAtk]);
+
+  useEffect(()=>{
+    if(lastBossAtk&&lastBossAtk.dmg>0){
+      setPlayerShake(true);
+      setTimeout(()=>setPlayerShake(false),400);
+      const msg=bossNarrations[Math.floor(Math.random()*bossNarrations.length)];
+      setNarration(msg);
+      setShowNarration(true);
+      setTimeout(()=>setShowNarration(false),2500);
+    }
+  },[lastBossAtk]);
+
+  const handleSkill=(skill)=>{
+    if(!isMyTurn) return;
+    const cd=cooldowns?.[skill.id]||0;
+    if(cd>0) return;
+    let dmg=Math.round(baseDmg*skill.dmgMult*questBonus);
+    let isCrit=critNext||skill.fx==="crit";
+    if(isCrit){dmg=Math.round(dmg*2);setCritNext(false);}
+    if(skill.fx==="crit_next"){setCritNext(true);dmg=0;}
+    const newCd={...(cooldowns||{})};
+    if(skill.cooldown>0) newCd[skill.id]=skill.cooldown;
+    if(setCooldowns) setCooldowns(newCd);
+    onChoose({id:skill.id,name:skill.name,dmg,fx:skill.fx,fxTag:skill.fx!=="none"&&skill.fx!=="crit_next"?skill.fx:"",fxCol:skill.col,crit:isCrit,heal:skill.fx==="heal"?15:0});
+  };
+
+  const c=boss.color;
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      <style>{`
+        @keyframes bossHit{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}50%{transform:translateX(7px)}70%{transform:translateX(-4px)}}
+        @keyframes playerHit{0%,100%{transform:translateX(0)}25%{transform:translateX(5px)}60%{transform:translateX(-5px)}}
+        @keyframes fadeUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes narrationIn{0%{opacity:0;transform:translateY(-8px)}20%,80%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+        @keyframes skillPulse{0%,100%{box-shadow:0 0 0px var(--sc)}50%{box-shadow:0 0 16px var(--sc)}}
+        @keyframes turnFlash{0%{opacity:0.4}50%{opacity:1}100%{opacity:0.4}}
+      `}</style>
+
+      {/* Boss arena */}
+      <div style={{position:"relative",borderRadius:20,overflow:"hidden",background:`linear-gradient(160deg,${c}0E,#000 70%)`,border:`1px solid ${bossWon?"#39FF14":c}30`,animation:bossShake?"bossHit 0.35s ease":"none",minHeight:180}}>
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 20%,${c}18 0%,transparent 60%)`,pointerEvents:"none"}}/>
+        {showNarration&&(
+          <div style={{position:"absolute",top:10,left:0,right:0,zIndex:10,textAlign:"center",padding:"0 16px",animation:"narrationIn 2.5s ease forwards"}}>
+            <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",color:c,fontStyle:"italic",background:"rgba(0,0,0,0.7)",padding:"4px 10px",borderRadius:8}}>"{narration}"</span>
+          </div>
+        )}
+        <div style={{display:"flex",alignItems:"center",padding:"14px 14px 8px",gap:12,position:"relative",zIndex:2}}>
+          <div style={{animation:bossShake?"bossHit 0.35s ease":bossWon?"none":"bossBreath 3s ease-in-out infinite",filter:bossWon?`drop-shadow(0 0 20px #39FF14)`:`drop-shadow(0 0 12px ${c})`,flexShrink:0}}>
+            <BossSVG bossId={boss.id} color={bossWon?"#39FF14":c} size={80} isShaking={bossShake} isDead={bossWon}/>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:7,color:`${c}88`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.2em"}}>{boss.title}</div>
+            <div style={{fontSize:15,fontFamily:"'Orbitron',monospace",fontWeight:900,color:bossWon?"#39FF14":c,textShadow:`0 0 12px ${c}`}}>{boss.name}</div>
+            <div style={{marginTop:6}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                <span style={{fontSize:7,color:"#334D66",fontFamily:"monospace"}}>PV BOSS</span>
+                <span style={{fontSize:9,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossWon?"#39FF14":bCol}}>{bossWon?"✦ VAINCU":Math.max(0,bossHp)+" / "+bossMaxHp}</span>
+              </div>
+              <Bar v={bossWon?0:bossHp} max={bossMaxHp} color={bossWon?"#39FF14":bCol} h={7}/>
+            </div>
+            {!bossWon&&bPct<=0.5&&<div style={{marginTop:4,fontSize:7,color:"#FF3864",fontFamily:"'Orbitron',monospace",letterSpacing:"0.1em",animation:"turnFlash 0.8s ease infinite"}}>⚠️ PHASE 2 — ENRAGÉ</div>}
+          </div>
+        </div>
+        {(lastPlayerAtk||lastBossAtk)&&!bossWon&&(
+          <div style={{display:"flex",gap:6,padding:"0 12px 10px",animation:"fadeUp 0.3s ease",position:"relative",zIndex:2}}>
+            {lastPlayerAtk&&lastPlayerAtk.dmg>0&&(
+              <div style={{flex:1,background:"rgba(57,255,20,0.05)",border:"1px solid rgba(57,255,20,0.15)",borderRadius:8,padding:"5px 8px"}}>
+                <div style={{fontSize:7,color:"#39FF1488",fontFamily:"'Orbitron',monospace",marginBottom:1}}>TOI</div>
+                <div style={{fontSize:9,color:"#C0C8E8",fontFamily:"monospace"}}>{lastPlayerAtk.name} <span style={{color:"#EF4444",fontWeight:700}}>-{lastPlayerAtk.dmg}</span>{lastPlayerAtk.crit&&<span style={{color:"#FFD700"}}> CRIT!</span>}</div>
+              </div>
+            )}
+            {lastBossAtk&&(
+              <div style={{flex:1,background:`${c}06`,border:`1px solid ${c}18`,borderRadius:8,padding:"5px 8px"}}>
+                <div style={{fontSize:7,color:`${c}88`,fontFamily:"'Orbitron',monospace",marginBottom:1}}>BOSS</div>
+                <div style={{fontSize:9,color:"#C0C8E8",fontFamily:"monospace"}}><span style={{color:"#EF4444",fontWeight:700}}>{lastBossAtk.skipped?"STUN!":"-"+lastBossAtk.dmg}</span></div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Player status */}
+      {!bossWon&&(
+        <div style={{background:"rgba(0,0,0,0.6)",border:`1px solid ${pCol}20`,borderRadius:14,padding:"10px 14px",animation:playerShake?"playerHit 0.35s ease":"none"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4,alignItems:"center"}}>
+            <span style={{fontSize:8,color:"#334D66",fontFamily:"monospace"}}>TES PV</span>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              {(statusFx||[]).map((ef,i)=>(
+                <div key={i} style={{padding:"2px 6px",borderRadius:5,background:`${ef.col}20`,border:`1px solid ${ef.col}40`,fontSize:7,color:ef.col,fontFamily:"monospace"}}>{ef.tag} {ef.turns}t</div>
+              ))}
+              <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:pCol}}>{Math.max(0,playerHp)}/{playerMaxHp}</span>
+            </div>
+          </div>
+          <Bar v={Math.max(0,playerHp)} max={playerMaxHp} color={pCol} h={8}/>
+          {questsDoneToday>0&&<div style={{marginTop:5,fontSize:7,color:"#FFD70088",fontFamily:"monospace"}}>⚡ Bonus quêtes: ×{questBonus.toFixed(1)} ({questsDoneToday}/{totalQuests})</div>}
+        </div>
+      )}
+
+      {/* Turn banner */}
+      {!bossWon&&(
+        <div style={{textAlign:"center",padding:"8px",background:isMyTurn?"rgba(57,255,20,0.05)":"rgba(239,68,68,0.05)",border:`1px solid ${isMyTurn?"rgba(57,255,20,0.2)":"rgba(239,68,68,0.2)"}`,borderRadius:10}}>
+          <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,letterSpacing:"0.1em",color:isMyTurn?"#39FF14":"#EF4444",textShadow:isMyTurn?"0 0 10px #39FF1488":"0 0 10px #EF444488",animation:isMyTurn?"none":"turnFlash 1s ease infinite"}}>
+            {isMyTurn?"⚔️  TON TOUR":"⏳  BOSS SE PRÉPARE..."}
+          </span>
+          {critNext&&<div style={{fontSize:8,color:"#FFD700",fontFamily:"monospace",marginTop:2}}>💥 PROCHAIN COUP CRITIQUE ×2</div>}
+        </div>
+      )}
+
+      {/* Skill buttons */}
+      {!bossWon&&(
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+          {skills.map(skill=>{
+            const cd=cooldowns?.[skill.id]||0;
+            const disabled=!isMyTurn||cd>0;
+            const dmgPreview=skill.dmgMult>0?Math.round(baseDmg*skill.dmgMult*questBonus*(critNext?2:1)):null;
+            return (
+              <button key={skill.id} onClick={()=>handleSkill(skill)} disabled={disabled} className="btn-press"
+                style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,padding:"12px 6px",background:disabled?`rgba(0,0,0,0.4)`:`linear-gradient(135deg,${skill.col}18,${skill.col}08)`,border:`1.5px solid ${disabled?"rgba(56,139,255,0.1)":skill.col+"55"}`,borderRadius:16,cursor:disabled?"default":"pointer",opacity:disabled?0.4:1,transition:"all 0.15s","--sc":skill.col,minHeight:88,position:"relative"}}>
+                {cd>0&&<div style={{position:"absolute",top:5,right:7,fontSize:8,color:"#EF4444",fontFamily:"'Orbitron',monospace",fontWeight:700}}>{cd}t</div>}
+                <span style={{fontSize:24}}>{skill.icon}</span>
+                <div style={{fontSize:8,fontFamily:"'Orbitron',monospace",fontWeight:700,color:disabled?"#334D66":skill.col,textAlign:"center",lineHeight:1.2}}>{skill.name.length>14?skill.name.slice(0,12)+"…":skill.name}</div>
+                {dmgPreview!==null&&dmgPreview>0?<div style={{fontSize:11,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#EF4444"}}>-{dmgPreview}{critNext&&<span style={{fontSize:7,color:"#FFD700"}}> CRIT</span>}</div>:skill.fx==="crit_next"?<div style={{fontSize:8,color:"#FFD700",fontFamily:"monospace"}}>+CRIT</div>:skill.fx==="heal"?<div style={{fontSize:11,color:"#39FF14",fontFamily:"'Orbitron',monospace",fontWeight:900}}>+15 PV</div>:null}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {bossWon&&(
+        <div style={{textAlign:"center",padding:"20px",background:"rgba(57,255,20,0.04)",border:"1px solid rgba(57,255,20,0.2)",borderRadius:16}}>
+          <div style={{fontSize:14,fontFamily:"'Orbitron',monospace",color:"#39FF14",fontWeight:700,marginBottom:4}}>✦ DONJON TERMINÉ</div>
+          <div style={{fontSize:9,color:"#8BADD4",fontFamily:"monospace"}}>Reviens demain pour un nouveau boss</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ══════════════════════════════════════════════════════════
 // POMODORO v2 — Configurable, pausable, alarme, autocomplete
 // ══════════════════════════════════════════════════════════
@@ -3757,6 +3915,4 @@ export default function App() {
       </div>
     </div>
   );
-}
-
 }

@@ -2951,6 +2951,7 @@ export default function App() {
   const [bossMsg,setBossMsg]=useState(null);
   const [bossDead,setBossDead]=useState(false);
   const [showEntry,setShowEntry]=useState(false);
+  const [inDungeon,setInDungeon]=useState(false);
   const [cooldowns,setCooldowns]=useState({});
   const [penalty,setPenalty]=useState(null);
   const [bossCounter,setBossCounter]=useState(null);
@@ -3057,6 +3058,7 @@ export default function App() {
 
   // Boss ambience — play when dungeon tab active
   useEffect(()=>{
+    if(tab!=="dungeon") setInDungeon(false);
     if(tab==="dungeon"&&s.soundEnabled){
       ambience.play(todayBoss.id,s.soundEnabled);
     } else {
@@ -3395,7 +3397,7 @@ export default function App() {
   })();
 
   if(!s.onboarded)return <Onboarding onComplete={name=>setS(p=>({...p,name,onboarded:true}))}/>;
-  if(showEntry)return <DungeonEntry boss={todayBoss} rankData={{...rankData,color:effectiveColor}} onEnter={()=>setShowEntry(false)}/>;
+  if(showEntry)return <DungeonEntry boss={todayBoss} rankData={{...rankData,color:effectiveColor}} onEnter={()=>{setShowEntry(false);setInDungeon(true);}}/>;
 
   return (
     <div style={{background:"#020B18",maxWidth:420,margin:"0 auto",fontFamily:"'Rajdhani',sans-serif",color:"#D0EAFF",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",height:"100vh"}}>
@@ -3550,86 +3552,63 @@ export default function App() {
         {/* ── DUNGEON ── */}
         {tab==="dungeon"&&(
           <div style={{padding:"0 0 80px",display:"flex",flexDirection:"column"}}>
-            {/* Cinematic boss arena */}
-            <div style={{position:"relative",minHeight:320,overflow:"hidden",flexShrink:0,background:"#000"}}>
-              {/* Portal background */}
-              {!bossWon&&(
-                <img src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/portal.png" alt="portal"
-                  style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.7,filter:`drop-shadow(0 0 30px ${todayBoss.color})`}}
-                />
-              )}
-              {/* Dark overlay so UI stays readable */}
-              <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.6) 100%)",zIndex:1}}/>
-              {/* Boss SVG — large and centered */}
-              <div style={{display:"flex",flexDirection:"column",alignItems:"center",paddingTop:18,paddingBottom:14,position:"relative",zIndex:2}}>
-                <div style={{fontSize:8,color:`${todayBoss.color}66`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:6}}>
-                  {bossWon?"✦ VAINCU":"⬛ PORTAIL ACTIF"}
-                </div>
-                <div style={{animation:bossWon?"none":"bossEnter 0.6s ease",filter:bossWon?`drop-shadow(0 0 20px #39FF14)`:`drop-shadow(0 0 15px ${todayBoss.color})`}}>
-                  <BossSVG bossId={todayBoss.id} color={bossWon?"#39FF14":todayBoss.color} size={100} isShaking={lastHit} isDead={bossWon||bossDead}/>
-                </div>
-                <div style={{fontSize:9,color:`${bossWon?"#39FF14":todayBoss.color}99`,fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginTop:6}}>{todayBoss.title}</div>
-                <div style={{fontSize:16,fontFamily:"'Orbitron',monospace",fontWeight:900,color:bossWon?"#39FF14":todayBoss.color,textShadow:`0 0 16px ${bossWon?"#39FF14":todayBoss.color}`,marginTop:2}}>{todayBoss.name}</div>
-              </div>
-              {/* HP bar full width */}
-              {!bossWon&&(
-                <div style={{padding:"0 16px 12px",position:"relative",zIndex:2}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                    <span style={{fontSize:8,color:"#2A2A3A",fontFamily:"monospace"}}>PV DU BOSS</span>
-                    <span style={{fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:bossHp/todayBoss.maxHp>0.5?"#EF4444":bossHp/todayBoss.maxHp>0.25?"#F59E0B":"#FF3864"}}>{Math.max(0,bossHp)} / {todayBoss.maxHp}</span>
-                  </div>
-                  <div style={{height:10,background:"rgba(56,139,255,0.18)",borderRadius:5,overflow:"hidden",boxShadow:"inset 0 2px 4px rgba(0,0,0,0.5)"}}>
-                    <div style={{height:"100%",width:`${(bossHp/todayBoss.maxHp)*100}%`,background:`linear-gradient(90deg,${bossHp/todayBoss.maxHp>0.5?"#EF4444":bossHp/todayBoss.maxHp>0.25?"#F59E0B":"#FF3864"},${todayBoss.color})`,borderRadius:5,transition:"width 0.6s cubic-bezier(.23,1.4,.42,1)",boxShadow:`0 0 8px ${todayBoss.color}`,animation:"hpDrain 0.3s ease"}}/>
-                  </div>
-                </div>
-              )}
-              {/* Hit flash overlays */}
-              {lastHit&&<div style={{position:"absolute",inset:0,zIndex:20,pointerEvents:"none",overflow:"hidden"}}>
-                <div style={{position:"absolute",top:"45%",left:"50%",width:"200%",height:3,background:`linear-gradient(90deg,transparent,${isCrit?"#FFD700":todayBoss.color},white,transparent)`,animation:"slashR 0.28s ease forwards",boxShadow:`0 0 16px ${isCrit?"#FFD700":todayBoss.color}`}}/>
-                <div style={{position:"absolute",top:"35%",left:"50%",width:"150%",height:2,background:`linear-gradient(90deg,transparent,${todayBoss.color},transparent)`,animation:"slashD 0.28s ease forwards 0.03s"}}/>
-                {isCrit&&<div style={{position:"absolute",inset:0,background:"rgba(255,215,0,0.07)",animation:"critFlash 0.35s ease"}}/>}
-              </div>}
-              {/* Entry button overlay */}
-              {!bossWon&&bossHp===todayBoss.maxHp&&(
-                <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.7)",zIndex:30,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,backdropFilter:"blur(2px)"}}>
+
+            {/* ── PORTAIL — PAS ENCORE ENTRÉ ── */}
+            {bossHp===todayBoss.maxHp&&!bossWon&&!inDungeon&&(
+              <div style={{position:"relative",overflow:"hidden",minHeight:"65vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                <img src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/portal.png" alt="portal" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.8}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.75) 100%)"}}/>
+                <div style={{position:"relative",zIndex:2,textAlign:"center",padding:"0 24px"}}>
+                  <div style={{fontSize:9,color:"rgba(168,85,247,0.9)",fontFamily:"'Orbitron',monospace",letterSpacing:"0.3em",marginBottom:12,animation:"systemPulse 2s ease infinite"}}>[ SYSTÈME ]</div>
+                  <div style={{fontSize:11,color:"rgba(200,224,255,0.7)",fontFamily:"'Orbitron',monospace",letterSpacing:"0.15em",marginBottom:6}}>PORTE DE RANG {rankData.rank} DÉTECTÉE</div>
+                  <div style={{fontSize:24,fontFamily:"'Orbitron',monospace",fontWeight:900,color:effectiveColor,textShadow:`0 0 24px ${effectiveColor}`,marginBottom:4}}>PORTAIL ACTIF</div>
+                  <div style={{fontSize:10,color:"rgba(139,173,212,0.5)",fontFamily:"monospace",marginBottom:36}}>Un boss vous attend à l'intérieur</div>
                   <button onClick={()=>{setShowEntry(true);setTimeout(checkBossCounter,800);}}
-                    style={{padding:"13px 32px",background:`${effectiveColor}18`,border:`2px solid ${effectiveColor}`,borderRadius:14,cursor:"pointer",fontSize:14,fontFamily:"'Orbitron',monospace",fontWeight:900,color:effectiveColor,letterSpacing:"0.12em",boxShadow:`0 0 30px ${effectiveColor}44`,animation:"sysIn 0.4s ease"}}>
-                    🚪 ENTRER DANS LE DONJON
+                    style={{padding:"16px 44px",background:`linear-gradient(135deg,${effectiveColor}22,${effectiveColor}11)`,border:`2px solid ${effectiveColor}`,borderRadius:16,cursor:"pointer",fontSize:15,fontFamily:"'Orbitron',monospace",fontWeight:900,color:effectiveColor,letterSpacing:"0.14em",boxShadow:`0 0 40px ${effectiveColor}55,0 8px 32px rgba(0,0,0,0.5)`}}>
+                    ENTRER ›
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Combat v2 */}
-            <div style={{padding:"12px 12px 0"}}>
-              {(bossWon||bossHp<todayBoss.maxHp)&&(
-                <button onClick={()=>setShowBilan(true)} style={{width:"100%",marginBottom:8,padding:"8px",background:"rgba(168,85,247,0.07)",border:"1px solid rgba(168,85,247,0.18)",borderRadius:10,cursor:"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F766",letterSpacing:"0.08em"}}>
-                  📋 RAPPORT DE MISSION
-                </button>
-              )}
-              {!bossWon&&attacks.length>0&&<AwakenAttack streak={streak} onAttack={doAwakenAttack} used={awakenUsedToday}/>}
-              <CombatV2
-                boss={todayBoss}
-                bossHp={bossHp}
-                bossMaxHp={todayBoss.maxHp}
-                playerHp={playerHp??PLAYER_MAX_HP}
-                playerMaxHp={PLAYER_MAX_HP}
-                rank={rankData.rank}
-                questsDoneToday={done.length}
-                totalQuests={s.quests.length}
-                turnPhase={turnPhase}
-                statusFx={statusFx}
-                lastBossAtk={lastBossAtk}
-                lastPlayerAtk={lastPlayerAtk}
-                bossWon={bossWon}
-                onChoose={doAttack}
-                cooldowns={cooldowns}
-                setCooldowns={setCooldowns}
-              />
-            </div>
+            {/* ── COMBAT EN COURS ── */}
+            {(bossHp<todayBoss.maxHp||inDungeon)&&!bossWon&&(
+              <div style={{padding:"12px 12px 0"}}>
+                {attacks.length>0&&<AwakenAttack streak={streak} onAttack={doAwakenAttack} used={awakenUsedToday}/>}
+                <CombatV2
+                  boss={todayBoss} bossHp={bossHp} bossMaxHp={todayBoss.maxHp}
+                  playerHp={playerHp??PLAYER_MAX_HP} playerMaxHp={PLAYER_MAX_HP}
+                  rank={rankData.rank} questsDoneToday={done.length} totalQuests={s.quests.length}
+                  turnPhase={turnPhase} statusFx={statusFx}
+                  lastBossAtk={lastBossAtk} lastPlayerAtk={lastPlayerAtk}
+                  bossWon={bossWon} onChoose={doAttack}
+                  cooldowns={cooldowns} setCooldowns={setCooldowns}/>
+                <button onClick={()=>setShowBilan(true)} style={{width:"100%",marginTop:8,padding:"8px",background:"rgba(168,85,247,0.07)",border:"1px solid rgba(168,85,247,0.18)",borderRadius:10,cursor:"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F766",letterSpacing:"0.08em"}}>📋 RAPPORT DE MISSION</button>
+              </div>
+            )}
+
+            {/* ── BOSS VAINCU ── */}
+            {bossWon&&(
+              <div style={{padding:"12px"}}>
+                <div style={{position:"relative",borderRadius:20,overflow:"hidden",border:"1px solid rgba(57,255,20,0.3)",padding:"32px 16px",textAlign:"center",marginBottom:12,background:"rgba(0,0,0,0.8)"}}>
+                  <img src="https://raw.githubusercontent.com/Samelannister/arise-app/main/public/bosses/portal.png" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.12,filter:"grayscale(100%)"}}/>
+                  <div style={{position:"relative",zIndex:1}}>
+                    <div style={{fontSize:36,marginBottom:8,filter:"drop-shadow(0 0 20px #39FF14)"}}>✦</div>
+                    <div style={{fontSize:15,fontFamily:"'Orbitron',monospace",fontWeight:900,color:"#39FF14",marginBottom:6}}>DONJON TERMINÉ</div>
+                    <div style={{fontSize:10,color:"rgba(139,173,212,0.5)",fontFamily:"monospace"}}>Reviens demain pour un nouveau boss</div>
+                  </div>
+                </div>
+                <button onClick={()=>setShowBilan(true)} style={{width:"100%",padding:"10px",background:"rgba(168,85,247,0.07)",border:"1px solid rgba(168,85,247,0.18)",borderRadius:10,cursor:"pointer",fontSize:10,fontFamily:"'Orbitron',monospace",fontWeight:700,color:"#A855F766",letterSpacing:"0.08em"}}>📋 RAPPORT DE MISSION</button>
+              </div>
+            )}
+
+            {/* old arena hidden below — REPLACED */}
+            {false&&(
+            <div style={{position:"relative",minHeight:320,overflow:"hidden",flexShrink:0,background:"#000"}}>
+              {/* Cinematic boss arena */}
+            </div>)}
           </div>
         )}
-
         {tab==="stats"&&<StatsTab history={s.history} quests={s.quests} totalXp={totalXp} streak={streak} gold={s.gold} defeatedBosses={s.defeatedBosses||[]}/>}
 
         {tab==="weekly"&&(
